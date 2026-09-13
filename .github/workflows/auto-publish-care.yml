@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  generate-and-deploy:
+  generate-and-publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -43,6 +43,24 @@ jobs:
         run: |
           python scripts/generate_care_article.py --keyword-id "${{ github.event.inputs.keyword_id }}"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build Astro site (sanity check)
+        env:
+          ENABLE_AFFILIATE: ${{ vars.ENABLE_AFFILIATE }}
+        run: npm run build
+        # Cloudflare Pages is connected directly to this GitHub repository
+        # (dashboard Git integration), so it builds and deploys on its own
+        # whenever the commit below is pushed. This step only exists to
+        # catch a broken build before that push reaches Cloudflare.
+
       - name: Commit and push new article
         id: commit
         run: |
@@ -57,27 +75,3 @@ jobs:
             git push origin HEAD:${{ github.ref_name }}
             echo "no_changes=false" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install Node dependencies
-        run: npm ci
-
-      - name: Build Astro site
-        env:
-          ENABLE_AFFILIATE: ${{ vars.ENABLE_AFFILIATE }}
-        run: npm run build
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
-          directory: dist
-          branch: main
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
