@@ -1,0 +1,99 @@
+---
+// アフィリエイト枠。ENABLE_AFFILIATE=='true' の場合のみ表示する。
+// トラフィック蓄積期（公開後1〜3ヶ月目など）は環境変数を 'false' にすることで
+// サイト全体の広告表示をコードの変更なしに一括OFFにできる。
+export interface Props {
+  conversionType: string;
+}
+
+const { conversionType } = Astro.props;
+
+const isEnabled = import.meta.env.ENABLE_AFFILIATE === "true";
+
+type OfferContent = {
+  heading: string;
+  body: string;
+  ctaLabel: string;
+  ctaHref: string;
+};
+
+const OFFERS: Record<string, OfferContent> = {
+  施設検索: {
+    heading: "入所できる施設を無料で探す",
+    body: "希望条件に合う介護施設を専門相談員が無料でご案内します。空き状況の確認や見学の同行手配も可能です。",
+    ctaLabel: "施設を無料で探してみる",
+    ctaHref: "#facility-search",
+  },
+  資料請求: {
+    heading: "関連サービスの資料を無料請求",
+    body: "気になったサービスの詳しい資料を、まとめて無料でお取り寄せいただけます。比較検討にお役立てください。",
+    ctaLabel: "無料で資料をもらう",
+    ctaHref: "#document-request",
+  },
+  訪問介護マッチング: {
+    heading: "近くの訪問介護事業者を探す",
+    body: "ご自宅の地域や希望の頻度に合わせて、信頼できる訪問介護事業者とのマッチングをサポートします。",
+    ctaLabel: "訪問介護を探してみる",
+    ctaHref: "#homecare-matching",
+  },
+};
+
+const DEFAULT_OFFER: OfferContent = {
+  heading: "介護の相談窓口を探す",
+  body: "お一人で抱え込まず、まずは無料で相談できる窓口をご案内します。",
+  ctaLabel: "相談窓口を見てみる",
+  ctaHref: "#care-consultation",
+};
+
+const offer = OFFERS[conversionType] ?? DEFAULT_OFFER;
+---
+
+{
+  isEnabled && (
+    <aside class="care-affiliate-banner" data-conversion-type={conversionType}>
+      <p class="care-affiliate-banner__heading">{offer.heading}</p>
+      <p class="care-affiliate-banner__body">{offer.body}</p>
+      <a class="care-affiliate-banner__cta" href={offer.ctaHref}>
+        {offer.ctaLabel}
+      </a>
+    </aside>
+  )
+}
+
+<style>
+  .care-affiliate-banner {
+    margin: 2rem 0;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid #e0d8c8;
+    border-radius: 0.75rem;
+    background: #fdfaf3;
+  }
+
+  .care-affiliate-banner__heading {
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #4a3f2c;
+  }
+
+  .care-affiliate-banner__body {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #5c5344;
+  }
+
+  .care-affiliate-banner__cta {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    background: #b5793c;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .care-affiliate-banner__cta:hover {
+    background: #9c6530;
+  }
+</style>

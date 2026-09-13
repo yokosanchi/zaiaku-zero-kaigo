@@ -1,0 +1,30 @@
+---
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>罪悪感ゼロ介護</title>
+  </head>
+  <body>
+    <main>
+      <h1>罪悪感ゼロ介護</h1>
+      <ul>
+        {
+          posts.map((post) => (
+            <li>
+              <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </main>
+  </body>
+</html>

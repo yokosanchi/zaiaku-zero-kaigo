@@ -1,0 +1,72 @@
+[
+  {
+    "id": "oyawoshisetsuni-zaiakukan-rakuninaru",
+    "keyword": "親を施設に入れる 罪悪感 楽になる方法",
+    "category": "施設入所",
+    "target_searcher": "在宅介護に限界を感じ、親の施設入所を検討しているが親不孝だと責める40〜50代の子世代",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "kaigo-tsukareta-genkai-jibunwosemenai",
+    "keyword": "介護 疲れた 限界 自分を責めない",
+    "category": "心理的負担",
+    "target_searcher": "介護疲れで心身の限界が近く、弱音を吐く自分を責めてしまう主介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "day-service-riyou-zaiakukan-herasu",
+    "keyword": "デイサービス 利用 罪悪感 減らす",
+    "category": "サービス利用",
+    "target_searcher": "デイサービス利用を「親を預けている」と後ろめたく感じている家族介護者",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "enkaku-kaigo-oyafukou-taisho",
+    "keyword": "遠方 介護 親不孝 感じる 対処法",
+    "category": "家族関係",
+    "target_searcher": "遠方に住み頻繁に帰省できず、親不孝だと感じている遠距離介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigo-rishoku-koukaishinai-handan",
+    "keyword": "介護離職 後悔しない 判断基準",
+    "category": "離職",
+    "target_searcher": "介護のために仕事を辞めるべきか悩み、後悔しない判断基準を探している現役世代",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "short-stay-zaiakukan-nakusu",
+    "keyword": "ショートステイ 罪悪感 なくす方法",
+    "category": "ショートステイ",
+    "target_searcher": "自分の休息のためにショートステイを使うことに罪悪感を抱く介護者",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "ninchisho-haha-shisetsu-nyusho-ketsudan",
+    "keyword": "認知症 母 施設入所 決断 いつ",
+    "category": "認知症ケア",
+    "target_searcher": "認知症の母の施設入所のタイミングを決めかねている家族",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "houmon-kaigo-tayoru-zaiakukan-tebanasu",
+    "keyword": "訪問介護 頼る 罪悪感 手放す",
+    "category": "訪問介護",
+    "target_searcher": "訪問介護サービスに頼ることを「甘え」だと感じている在宅介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigo-kyoudai-oshitsuke-fukouhei-taisho",
+    "keyword": "介護 兄弟 押し付け 不公平 対処",
+    "category": "家族間トラブル",
+    "target_searcher": "介護負担が自分に偏り、兄弟姉妹との不公平感に苦しむ介護者",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "jibunnojikan-kaigo-yuusen-zaiakukan-kokufuku",
+    "keyword": "自分の時間 介護 優先 罪悪感 克服",
+    "category": "セルフケア",
+    "target_searcher": "介護よりも自分の時間を優先することに罪悪感を覚え、克服したい介護者",
+    "conversion_type": "訪問介護マッチング"
+  }
+]

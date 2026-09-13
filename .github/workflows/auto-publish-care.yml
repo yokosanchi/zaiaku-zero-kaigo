@@ -1,0 +1,83 @@
+name: Auto Publish Care Article
+
+on:
+  schedule:
+    # 22:00 UTC on Sun/Tue/Thu = 07:00 JST on Mon/Wed/Fri
+    - cron: "0 22 * * 0,2,4"
+  workflow_dispatch:
+    inputs:
+      keyword_id:
+        description: "Force generation for a specific keyword id from scripts/keywords_care.json (leave empty to auto-pick the next pending keyword)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-publish-care
+  cancel-in-progress: false
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Generate care article
+        id: generate
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+        run: |
+          python scripts/generate_care_article.py --keyword-id "${{ github.event.inputs.keyword_id }}"
+
+      - name: Commit and push new article
+        id: commit
+        run: |
+          git config user.name "care-content-bot"
+          git config user.email "care-content-bot@users.noreply.github.com"
+          git add src/content/blog/
+          if git diff --cached --quiet; then
+            echo "no_changes=true" >> "$GITHUB_OUTPUT"
+            echo "No new article generated; skipping commit."
+          else
+            git commit -m "chore(blog): auto-publish new care article"
+            git push origin HEAD:${{ github.ref_name }}
+            echo "no_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build Astro site
+        env:
+          ENABLE_AFFILIATE: ${{ vars.ENABLE_AFFILIATE }}
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+          directory: dist
+          branch: main
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
