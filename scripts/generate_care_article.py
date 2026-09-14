@@ -129,28 +129,38 @@ def build_retry_prompt(errors: list[str]) -> str:
 
 def call_llm(system_prompt: str, messages: list[dict]) -> str:
     try:
-        import anthropic
+        from google import genai
+        from google.genai import types
     except ImportError as exc:
         raise GenerationError(
-            "anthropic package is not installed. Run `pip install -r scripts/requirements.txt`."
+            "google-genai package is not installed. Run `pip install -r scripts/requirements.txt`."
         ) from exc
 
     import os
 
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        raise GenerationError("ANTHROPIC_API_KEY environment variable is not set")
+        raise GenerationError("GEMINI_API_KEY environment variable is not set")
 
-    model = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-5")
-    client = anthropic.Anthropic(api_key=api_key)
+    # Free-tier-eligible model via Google AI Studio (ai.google.dev). Override
+    # with GEMINI_MODEL if the free-tier lineup changes.
+    model = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+    client = genai.Client(api_key=api_key)
 
-    response = client.messages.create(
+    contents = [
+        types.Content(
+            role="model" if m["role"] == "assistant" else "user",
+            parts=[types.Part(text=m["content"])],
+        )
+        for m in messages
+    ]
+
+    response = client.models.generate_content(
         model=model,
-        max_tokens=8000,
-        system=system_prompt,
-        messages=messages,
+        contents=contents,
+        config=types.GenerateContentConfig(system_instruction=system_prompt),
     )
-    return "".join(block.text for block in response.content if block.type == "text")
+    return response.text
 
 
 def split_frontmatter(raw: str) -> tuple[dict | None, str, list[str]]:
