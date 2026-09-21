@@ -63,13 +63,28 @@ const metaFor = (category: string): CategoryMeta =>
         <p class="lead">
           「施設に入れるなんて親不孝じゃないか」「自分の時間を優先していいのか」——介護のなかで生まれるその罪悪感は、あなたが真剣に向き合ってきた証です。同じ悩みを抱える方の質問形式で、専門家の視点からの考え方と頼れる相談先を紹介しています。
         </p>
-        <p class="about">
-          <strong>このサイトについて：</strong
-          >介護福祉士・社会福祉士の知見をもとにした方針で記事を作成し、公開前に内容のチェックを行っています。個別のご事情については、お近くの<strong>地域包括支援センター</strong>や専門家にご相談ください。
-          <br />
-          <strong>ロゴについて：</strong
-          >閉じきらない輪は、ぐるぐる巡っていた罪悪感の輪から一歩抜け出せますように、という思いを込めています。輪からこぼれた小さな点は、そこから抜け出したあなた自身です。
-        </p>
+        <div class="about">
+          <div class="about-row">
+            <span class="about-icon" aria-hidden="true">ℹ️</span>
+            <div>
+              <p class="about-label">このサイトについて</p>
+              <p class="about-text">
+                介護福祉士・社会福祉士の知見をもとにした方針で記事を作成し、公開前に内容のチェックを行っています。個別のご事情については、お近くの<strong
+                  >地域包括支援センター</strong
+                >や専門家にご相談ください。
+              </p>
+            </div>
+          </div>
+          <div class="about-row">
+            <span class="about-icon" aria-hidden="true"><Logo size={20} /></span>
+            <div>
+              <p class="about-label">ロゴについて</p>
+              <p class="about-text">
+                閉じきらない輪は、ぐるぐる巡っていた罪悪感の輪から一歩抜け出せますように、という思いを込めています。輪からこぼれた小さな点は、そこから抜け出したあなた自身です。
+              </p>
+            </div>
+          </div>
+        </div>
       </header>
 
       {
@@ -175,12 +190,48 @@ const metaFor = (category: string): CategoryMeta =>
   }
 
   .about {
-    margin-top: 1rem;
-    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin-top: 1.25rem;
+    padding: 1rem 1.1rem;
     border-radius: 0.6rem;
+    border-left: 4px solid #b5793c;
     background: #f3ede0;
+  }
+
+  .about-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .about-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: #fff;
+    font-size: 1rem;
+    margin-top: 0.1rem;
+  }
+
+  .about-label {
+    margin: 0 0 0.2rem;
+    font-family: "Zen Maru Gothic", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #8f5a26;
+  }
+
+  .about-text {
+    margin: 0;
     color: #5c5344;
     font-size: 0.85rem;
+    line-height: 1.75;
   }
 
   .category-nav {
