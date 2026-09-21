@@ -7,24 +7,32 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
 
 const categories = [...new Set(posts.map((p) => p.data.category))];
 
-type CategoryMeta = { icon: string; color: string; bg: string };
+type CategoryMeta = { icon: string; color: string; bg: string; slug: string };
 
 const CATEGORY_META: Record<string, CategoryMeta> = {
-  施設入所: { icon: "🏠", color: "#b5793c", bg: "#f6ead9" },
-  心理的負担: { icon: "💭", color: "#6b8f71", bg: "#e6efe4" },
-  サービス利用: { icon: "🛎️", color: "#5c80a8", bg: "#e3ebf3" },
-  家族関係: { icon: "👨‍👩‍👧", color: "#a85c78", bg: "#f3e3ea" },
-  離職: { icon: "💼", color: "#8a7a4a", bg: "#eee9dd" },
-  ショートステイ: { icon: "🌙", color: "#6b8f71", bg: "#e6efe4" },
-  認知症ケア: { icon: "🧠", color: "#5c80a8", bg: "#e3ebf3" },
-  訪問介護: { icon: "🚪", color: "#b5793c", bg: "#f6ead9" },
-  家族間トラブル: { icon: "⚖️", color: "#a85c78", bg: "#f3e3ea" },
-  セルフケア: { icon: "🌿", color: "#8a7a4a", bg: "#eee9dd" },
+  施設入所: { icon: "🏠", color: "#b5793c", bg: "#f6ead9", slug: "shisetsu-nyusho" },
+  心理的負担: { icon: "💭", color: "#6b8f71", bg: "#e6efe4", slug: "shinriteki-futan" },
+  サービス利用: { icon: "🛎️", color: "#5c80a8", bg: "#e3ebf3", slug: "service-riyou" },
+  家族関係: { icon: "👨‍👩‍👧", color: "#a85c78", bg: "#f3e3ea", slug: "kazoku-kankei" },
+  離職: { icon: "💼", color: "#8a7a4a", bg: "#eee9dd", slug: "rishoku" },
+  ショートステイ: { icon: "🌙", color: "#6b8f71", bg: "#e6efe4", slug: "short-stay" },
+  認知症ケア: { icon: "🧠", color: "#5c80a8", bg: "#e3ebf3", slug: "ninchisho-care" },
+  訪問介護: { icon: "🚪", color: "#b5793c", bg: "#f6ead9", slug: "houmon-kaigo" },
+  家族間トラブル: { icon: "⚖️", color: "#a85c78", bg: "#f3e3ea", slug: "kazokukan-trouble" },
+  セルフケア: { icon: "🌿", color: "#8a7a4a", bg: "#eee9dd", slug: "self-care" },
 };
 
-const DEFAULT_META: CategoryMeta = { icon: "📝", color: "#9c6530", bg: "#f3ede0" };
+const DEFAULT_META: Omit<CategoryMeta, "slug"> = {
+  icon: "📝",
+  color: "#9c6530",
+  bg: "#f3ede0",
+};
 
-const metaFor = (category: string) => CATEGORY_META[category] ?? DEFAULT_META;
+const metaFor = (category: string): CategoryMeta =>
+  CATEGORY_META[category] ?? {
+    ...DEFAULT_META,
+    slug: encodeURIComponent(category),
+  };
 ---
 
 <!doctype html>
@@ -56,6 +64,26 @@ const metaFor = (category: string) => CATEGORY_META[category] ?? DEFAULT_META;
         </p>
       </header>
 
+      {
+        categories.length > 1 && (
+          <nav class="category-nav" aria-label="カテゴリへ移動">
+            {categories.map((category) => {
+              const meta = metaFor(category);
+              return (
+                <a
+                  class="nav-chip"
+                  href={`#${meta.slug}`}
+                  style={`background: ${meta.bg}; color: ${meta.color}`}
+                >
+                  <span class="icon">{meta.icon}</span>
+                  {category}
+                </a>
+              );
+            })}
+          </nav>
+        )
+      }
+
       <main>
         {
           categories.length === 0 && (
@@ -66,7 +94,7 @@ const metaFor = (category: string) => CATEGORY_META[category] ?? DEFAULT_META;
           categories.map((category) => {
             const meta = metaFor(category);
             return (
-              <section class="category">
+              <section class="category" id={meta.slug}>
                 <h2 style={`color: ${meta.color}`}>
                   <span class="icon-badge" style={`background: ${meta.bg}`}>
                     <span class="icon">{meta.icon}</span>
@@ -106,6 +134,10 @@ const metaFor = (category: string) => CATEGORY_META[category] ?? DEFAULT_META;
     color-scheme: light;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   .page {
     max-width: 780px;
     margin: 0 auto;
@@ -136,8 +168,37 @@ const metaFor = (category: string) => CATEGORY_META[category] ?? DEFAULT_META;
     font-size: 0.85rem;
   }
 
+  .category-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .nav-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    font-family: "Zen Maru Gothic", system-ui, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: filter 0.15s ease;
+  }
+
+  .nav-chip:hover {
+    filter: brightness(0.96);
+  }
+
+  .nav-chip .icon {
+    font-size: 0.95rem;
+  }
+
   .category {
     margin-top: 2.5rem;
+    scroll-margin-top: 1.25rem;
   }
 
   .category h2 {
