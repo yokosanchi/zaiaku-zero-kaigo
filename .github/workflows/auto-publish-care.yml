@@ -2,8 +2,8 @@ name: Auto Publish Care Article
 
 on:
   schedule:
-    # 22:00 UTC on Sun/Tue/Thu = 07:00 JST on Mon/Wed/Fri
-    - cron: "0 22 * * 0,2,4"
+    # 22:00 UTC daily = 07:00 JST daily
+    - cron: "0 22 * * *"
   workflow_dispatch:
     inputs:
       keyword_id:

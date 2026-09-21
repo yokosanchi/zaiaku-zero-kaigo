@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zaiaku-zero-kaigo.yokosanchi.workers.dev/sitemap.xml
