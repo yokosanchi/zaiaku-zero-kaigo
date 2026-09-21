@@ -5,3 +5,4 @@ dist/
 .env
 __pycache__/
 *.pyc
+scripts/search_console_insights.json

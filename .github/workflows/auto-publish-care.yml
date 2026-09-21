@@ -35,6 +35,15 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r scripts/requirements.txt
 
+      - name: Fetch Search Console insights
+        env:
+          GSC_SERVICE_ACCOUNT_KEY: ${{ secrets.GSC_SERVICE_ACCOUNT_KEY }}
+          GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}
+        run: python scripts/fetch_search_console.py
+        # Optional signal: if the Search Console secret/var isn't set yet,
+        # or the API call fails for any reason, this writes an empty
+        # insights file and exits 0 so publishing never blocks on it.
+
       - name: Generate care article
         id: generate
         env:

@@ -146,10 +146,38 @@ def pick_keyword(keywords: list[dict], forced_id: str | None) -> dict:
     raise GenerationError("no pending keywords: all articles already generated")
 
 
-def build_keyword_gen_prompt(existing_keywords: list[dict]) -> str:
+SEARCH_CONSOLE_INSIGHTS_PATH = REPO_ROOT / "scripts" / "search_console_insights.json"
+
+
+def load_search_console_insights() -> list[dict]:
+    if not SEARCH_CONSOLE_INSIGHTS_PATH.exists():
+        return []
+    try:
+        with SEARCH_CONSOLE_INSIGHTS_PATH.open(encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return []
+    return data if isinstance(data, list) else []
+
+
+def build_keyword_gen_prompt(existing_keywords: list[dict], search_console_insights: list[dict]) -> str:
     existing_list = "\n".join(f"- {kw['keyword']}（{kw['category']}）" for kw in existing_keywords)
     categories = "、".join(ALLOWED_CATEGORIES)
     conversion_types = "、".join(ALLOWED_CONVERSION_TYPES)
+
+    if search_console_insights:
+        insight_lines = "\n".join(
+            f"- {row['query']}（表示回数: {row['impressions']}）" for row in search_console_insights
+        )
+        demand_section = f"""
+# 実際の検索データ(Google Search Console、直近28日間)
+以下は、このサイトが実際に検索結果に表示されているが、まだ専用記事がないクエリです。
+これらは実在する検索需要なので、できる限りこの中から選んでキーワード候補にしてください。
+{insight_lines}
+"""
+    else:
+        demand_section = ""
+
     return f"""あなたは「罪悪感ゼロ介護」というサイトのSEOキーワードリサーチ担当です。
 このサイトは、介護のなかで生まれる罪悪感(施設入所、自分の時間を優先すること等)を、
 介護福祉士・社会福祉士の視点から肯定し、悩みを抱える家族介護者に寄り添うQ&A形式の
@@ -157,9 +185,10 @@ def build_keyword_gen_prompt(existing_keywords: list[dict]) -> str:
 
 # 既存のキーワード(重複や似すぎた切り口を避けること)
 {existing_list}
-
+{demand_section}
 # 依頼内容
 上記とは異なる具体的な悩み・検索意図を持つ、ロングテールキーワードを{NEW_KEYWORDS_PER_BATCH}個考えてください。
+- 上の「実際の検索データ」があれば、それを優先的にキーワード化すること(実証済みの検索需要があるため)。データがない、または{NEW_KEYWORDS_PER_BATCH}個に満たない場合は、残りを自分で考えて補うこと。
 - 実際に介護中の家族が検索しそうな、自然で具体的な日本語のフレーズにすること。
 - 「介護 罪悪感」のような一般語だけでなく、具体的な状況(誰の・どんな場面での・どんな感情か)を含めること。
 - カテゴリは必ず次の中から1つを選ぶこと: {categories}
@@ -222,7 +251,10 @@ def validate_keyword_candidate(
 
 
 def generate_new_keywords(existing_keywords: list[dict]) -> list[dict]:
-    prompt = build_keyword_gen_prompt(existing_keywords)
+    insights = load_search_console_insights()
+    if insights:
+        print(f"Using {len(insights)} Search Console query insight(s) to guide keyword generation.")
+    prompt = build_keyword_gen_prompt(existing_keywords, insights)
     raw = call_llm(
         "あなたはSEOキーワードリサーチのアシスタントです。指示された形式を厳守してください。",
         [{"role": "user", "content": prompt}],
