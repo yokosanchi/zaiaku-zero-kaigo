@@ -6,6 +6,25 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
 );
 
 const categories = [...new Set(posts.map((p) => p.data.category))];
+
+type CategoryMeta = { icon: string; color: string };
+
+const CATEGORY_META: Record<string, CategoryMeta> = {
+  施設入所: { icon: "🏠", color: "#b5793c" },
+  心理的負担: { icon: "💭", color: "#6b8f71" },
+  サービス利用: { icon: "🛎️", color: "#5c80a8" },
+  家族関係: { icon: "👨‍👩‍👧", color: "#a85c78" },
+  離職: { icon: "💼", color: "#8a7a4a" },
+  ショートステイ: { icon: "🌙", color: "#6b8f71" },
+  認知症ケア: { icon: "🧠", color: "#5c80a8" },
+  訪問介護: { icon: "🚪", color: "#b5793c" },
+  家族間トラブル: { icon: "⚖️", color: "#a85c78" },
+  セルフケア: { icon: "🌿", color: "#8a7a4a" },
+};
+
+const DEFAULT_META: CategoryMeta = { icon: "📝", color: "#9c6530" };
+
+const metaFor = (category: string) => CATEGORY_META[category] ?? DEFAULT_META;
 ---
 
 <!doctype html>
@@ -26,6 +45,10 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
         <p class="lead">
           「施設に入れるなんて親不孝じゃないか」「自分の時間を優先していいのか」——介護のなかで生まれるその罪悪感は、あなたが真剣に向き合ってきた証です。同じ悩みを抱える方の質問形式で、専門家の視点からの考え方と頼れる相談先を紹介しています。
         </p>
+        <p class="about">
+          <strong>このサイトについて：</strong
+          >介護福祉士・社会福祉士の知見をもとにした方針で記事を作成し、公開前に内容のチェックを行っています。個別のご事情については、お近くの<strong>地域包括支援センター</strong>や専門家にご相談ください。
+        </p>
       </header>
 
       <main>
@@ -35,24 +58,36 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
           )
         }
         {
-          categories.map((category) => (
-            <section class="category">
-              <h2>{category}</h2>
-              <ul class="qa-list">
-                {posts
-                  .filter((post) => post.data.category === category)
-                  .map((post) => (
-                    <li>
-                      <a class="qa-card" href={`/qa/${post.slug}/`}>
-                        <span class="q">Q. {post.data.keyword}</span>
-                        <span class="desc">{post.data.description}</span>
-                        <span class="cta">回答を見る →</span>
-                      </a>
-                    </li>
-                  ))}
-              </ul>
-            </section>
-          ))
+          categories.map((category) => {
+            const meta = metaFor(category);
+            return (
+              <section class="category">
+                <h2 style={`color: ${meta.color}`}>
+                  <span class="icon">{meta.icon}</span>
+                  {category}
+                </h2>
+                <ul class="qa-list">
+                  {posts
+                    .filter((post) => post.data.category === category)
+                    .map((post) => (
+                      <li>
+                        <a
+                          class="qa-card"
+                          style={`border-left-color: ${meta.color}`}
+                          href={`/qa/${post.slug}/`}
+                        >
+                          <span class="q">Q. {post.data.keyword}</span>
+                          <span class="desc">{post.data.description}</span>
+                          <span class="cta" style={`color: ${meta.color}`}>
+                            回答を見る →
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                </ul>
+              </section>
+            );
+          })
         }
       </main>
     </div>
@@ -84,15 +119,30 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
     font-size: 0.98rem;
   }
 
+  .about {
+    margin-top: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 0.6rem;
+    background: #f3ede0;
+    color: #5c5344;
+    font-size: 0.85rem;
+  }
+
   .category {
     margin-top: 2.5rem;
   }
 
   .category h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 1.15rem;
     padding-bottom: 0.4rem;
     border-bottom: 2px solid #e8dcc4;
-    color: #9c6530;
+  }
+
+  .icon {
+    font-size: 1.1rem;
   }
 
   .qa-list {
@@ -110,15 +160,16 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
     gap: 0.35rem;
     padding: 1rem 1.1rem;
     border: 1px solid #e8dcc4;
+    border-left-width: 4px;
     border-radius: 0.75rem;
     background: #fff;
     text-decoration: none;
     color: inherit;
-    transition: border-color 0.15s ease;
+    transition: box-shadow 0.15s ease;
   }
 
   .qa-card:hover {
-    border-color: #d9a35f;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
   }
 
   .q {
@@ -134,7 +185,6 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
   .cta {
     align-self: flex-end;
     font-size: 0.85rem;
-    color: #b5793c;
     font-weight: 600;
   }
 
