@@ -68,5 +68,75 @@
     "category": "セルフケア",
     "target_searcher": "介護よりも自分の時間を優先することに罪悪感を覚え、克服したい介護者",
     "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "oya-wo-roujin-home-ketsudan-taimingu",
+    "keyword": "親を老人ホームに入れる 決断 タイミング 後悔しない",
+    "category": "施設入所",
+    "target_searcher": "施設入所のタイミングに迷い、決断を先延ばしにしている家族",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "kaigo-utsu-kizukanai-jibun-sign-check",
+    "keyword": "介護うつ 気づかない 自分 サイン チェック",
+    "category": "心理的負担",
+    "target_searcher": "慢性的な疲労感や気分の落ち込みがあるが、それが介護うつだと気づいていない主介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigo-hoken-service-riyou-teikoukan-nakusu",
+    "keyword": "介護保険サービス 利用 抵抗感 なくす 親",
+    "category": "サービス利用",
+    "target_searcher": "介護保険サービスの利用を親に勧めることに気が引ける家族",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "kaigo-kansha-sarenai-munashii-iraira-taisho",
+    "keyword": "介護 感謝されない 虚しい イライラ 対処",
+    "category": "家族関係",
+    "target_searcher": "献身的に介護しても親から感謝されず、虚しさやイライラを感じている介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigo-shigoto-ryouritsu-genkai-yameru-mae-ni",
+    "keyword": "介護 仕事 両立 限界 辞める前に",
+    "category": "離職",
+    "target_searcher": "仕事と介護の両立に限界を感じ、退職を考え始めている現役世代",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "short-stay-azukeru-kawaisou-zaiakukan",
+    "keyword": "ショートステイ 預ける 可哀想 罪悪感",
+    "category": "ショートステイ",
+    "target_searcher": "ショートステイに親を「預ける」ことを可哀想だと感じてしまう介護者",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "ninchisho-kaigo-tsukareta-genkai-shisetsu",
+    "keyword": "認知症 介護 疲れた 限界 施設",
+    "category": "認知症ケア",
+    "target_searcher": "認知症の親の介護に限界を感じ、施設入所を考え始めた家族",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "houmon-kaigo-tanin-ie-ni-ireru-teikou-nakusu",
+    "keyword": "訪問介護 他人 家に入れる 抵抗 なくす",
+    "category": "訪問介護",
+    "target_searcher": "訪問介護スタッフを自宅に入れることに抵抗を感じている高齢者本人・家族",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigo-kyoudai-renraku-torenai-hitoride-kakaeru",
+    "keyword": "介護 きょうだい 連絡取れない 一人で抱える",
+    "category": "家族間トラブル",
+    "target_searcher": "きょうだいと連絡が取りづらく、介護を一人で抱え込んでいる介護者",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "kaigo-ikinuki-dekinai-zaiakukan-nakusu-houhou",
+    "keyword": "介護 息抜き できない 罪悪感 なくす方法",
+    "category": "セルフケア",
+    "target_searcher": "介護の合間に息抜きすることへの罪悪感を感じ、自分の時間を作れずにいる介護者",
+    "conversion_type": "訪問介護マッチング"
   }
 ]
