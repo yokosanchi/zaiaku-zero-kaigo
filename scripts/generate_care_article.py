@@ -2,10 +2,16 @@
 """Generate a "zero-guilt caregiving" SEO blog article with a Generator-Evaluator loop.
 
 Picks the next keyword from keywords_care.json that has no corresponding
-article yet (or a keyword forced via --keyword-id), generates the article
-body with an LLM, runs it through deterministic YMYL guardrails, retries
-once with feedback on failure, and writes the validated article (plus a
-deterministically-appended disclaimer) to src/content/blog/{id}.md.
+article yet (or a keyword forced via --keyword-id). If every keyword already
+has an article, asks the LLM to brainstorm a fresh batch of long-tail
+keywords in the site's existing categories, validates and appends the ones
+that pass (id format, no duplicates, allowed category/conversion_type) back
+to keywords_care.json, and picks one of those instead -- so the pipeline
+never runs out of topics without human intervention. Either way, it then
+generates the article body with an LLM, runs it through deterministic YMYL
+guardrails, retries once with feedback on failure, and writes the validated
+article (plus a deterministically-appended references + disclaimer section)
+to src/content/blog/{id}.md.
 """
 
 from __future__ import annotations
@@ -107,6 +113,14 @@ DEFAULT_REFERENCES: list[tuple[str, str]] = [
     ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
 ]
 
+# キーワード自動補充で許容するカテゴリ・コンバージョン種別。
+# REFERENCE_SOURCES のキーが既存カテゴリの正とする(表示側のアイコン・色
+# マッピングと一致させるため、LLMにはこの範囲内でしか選ばせない)。
+ALLOWED_CATEGORIES: list[str] = list(REFERENCE_SOURCES.keys())
+ALLOWED_CONVERSION_TYPES: list[str] = ["施設検索", "資料請求", "訪問介護マッチング"]
+KEYWORD_ID_PATTERN = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+NEW_KEYWORDS_PER_BATCH = 5
+
 
 class GenerationError(RuntimeError):
     pass
@@ -130,6 +144,126 @@ def pick_keyword(keywords: list[dict], forced_id: str | None) -> dict:
             return kw
 
     raise GenerationError("no pending keywords: all articles already generated")
+
+
+def build_keyword_gen_prompt(existing_keywords: list[dict]) -> str:
+    existing_list = "\n".join(f"- {kw['keyword']}（{kw['category']}）" for kw in existing_keywords)
+    categories = "、".join(ALLOWED_CATEGORIES)
+    conversion_types = "、".join(ALLOWED_CONVERSION_TYPES)
+    return f"""あなたは「罪悪感ゼロ介護」というサイトのSEOキーワードリサーチ担当です。
+このサイトは、介護のなかで生まれる罪悪感(施設入所、自分の時間を優先すること等)を、
+介護福祉士・社会福祉士の視点から肯定し、悩みを抱える家族介護者に寄り添うQ&A形式の
+情報サイトです。
+
+# 既存のキーワード(重複や似すぎた切り口を避けること)
+{existing_list}
+
+# 依頼内容
+上記とは異なる具体的な悩み・検索意図を持つ、ロングテールキーワードを{NEW_KEYWORDS_PER_BATCH}個考えてください。
+- 実際に介護中の家族が検索しそうな、自然で具体的な日本語のフレーズにすること。
+- 「介護 罪悪感」のような一般語だけでなく、具体的な状況(誰の・どんな場面での・どんな感情か)を含めること。
+- カテゴリは必ず次の中から1つを選ぶこと: {categories}
+- conversion_typeは必ず次の中から1つを選ぶこと: {conversion_types}
+- idは、keywordをローマ字化したような半角英数字とハイフンのみの一意な文字列にすること(スペースや日本語を含めない)。
+
+# 出力形式(厳守)
+説明文や前置きは一切書かず、以下のJSON配列だけを出力してください。
+[
+  {{
+    "id": "半角英数字とハイフンのみのid",
+    "keyword": "検索されそうな日本語キーワード",
+    "category": "上記カテゴリのいずれか",
+    "target_searcher": "この記事を検索しそうな人物像の説明",
+    "conversion_type": "上記のいずれか"
+  }}
+]
+"""
+
+
+def extract_json_array(text: str) -> str:
+    cleaned = text.strip()
+    cleaned = re.sub(r"^```(json)?", "", cleaned.strip())
+    cleaned = re.sub(r"```$", "", cleaned.strip())
+    start = cleaned.find("[")
+    end = cleaned.rfind("]")
+    if start == -1 or end == -1 or end < start:
+        raise GenerationError(f"keyword generation did not return a JSON array: {text[:200]!r}")
+    return cleaned[start : end + 1]
+
+
+def validate_keyword_candidate(
+    entry: object, existing_ids: set[str], existing_keyword_texts: set[str]
+) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(entry, dict):
+        return ["キーワード候補がオブジェクト形式ではありません"]
+
+    required = ["id", "keyword", "category", "target_searcher", "conversion_type"]
+    missing = [k for k in required if not entry.get(k)]
+    if missing:
+        errors.append(f"必須キーが不足しています: {', '.join(missing)}")
+        return errors
+
+    if not KEYWORD_ID_PATTERN.match(entry["id"]):
+        errors.append(f"idの形式が不正です(半角英数字とハイフンのみ): {entry['id']!r}")
+    elif entry["id"] in existing_ids:
+        errors.append(f"idが既存のものと重複しています: {entry['id']!r}")
+
+    if entry["keyword"] in existing_keyword_texts:
+        errors.append(f"keywordが既存のものと重複しています: {entry['keyword']!r}")
+
+    if entry["category"] not in ALLOWED_CATEGORIES:
+        errors.append(f"categoryが許容範囲外です: {entry['category']!r}")
+
+    if entry["conversion_type"] not in ALLOWED_CONVERSION_TYPES:
+        errors.append(f"conversion_typeが許容範囲外です: {entry['conversion_type']!r}")
+
+    return errors
+
+
+def generate_new_keywords(existing_keywords: list[dict]) -> list[dict]:
+    prompt = build_keyword_gen_prompt(existing_keywords)
+    raw = call_llm(
+        "あなたはSEOキーワードリサーチのアシスタントです。指示された形式を厳守してください。",
+        [{"role": "user", "content": prompt}],
+    )
+    json_text = extract_json_array(raw)
+    try:
+        candidates = json.loads(json_text)
+    except json.JSONDecodeError as exc:
+        raise GenerationError(f"keyword generation returned invalid JSON: {exc}") from exc
+
+    if not isinstance(candidates, list):
+        raise GenerationError("keyword generation did not return a JSON array")
+
+    existing_ids = {kw["id"] for kw in existing_keywords}
+    existing_keyword_texts = {kw["keyword"] for kw in existing_keywords}
+
+    accepted: list[dict] = []
+    for candidate in candidates:
+        errors = validate_keyword_candidate(candidate, existing_ids, existing_keyword_texts)
+        if errors:
+            print(f"[keyword-gen] rejected candidate {candidate!r}: {errors}", file=sys.stderr)
+            continue
+        accepted.append(
+            {
+                "id": candidate["id"],
+                "keyword": candidate["keyword"],
+                "category": candidate["category"],
+                "target_searcher": candidate["target_searcher"],
+                "conversion_type": candidate["conversion_type"],
+            }
+        )
+        existing_ids.add(candidate["id"])
+        existing_keyword_texts.add(candidate["keyword"])
+
+    return accepted
+
+
+def save_keywords(keywords: list[dict]) -> None:
+    with KEYWORDS_PATH.open("w", encoding="utf-8") as f:
+        json.dump(keywords, f, ensure_ascii=False, indent=2)
+        f.write("\n")
 
 
 def build_system_prompt() -> str:
@@ -349,8 +483,29 @@ def main() -> int:
     try:
         keyword = pick_keyword(keywords, args.keyword_id)
     except GenerationError as exc:
-        print(str(exc))
-        return 0
+        if args.keyword_id is not None:
+            print(str(exc))
+            return 0
+
+        print("No pending keywords. Asking the LLM to brainstorm new ones...")
+        try:
+            new_entries = generate_new_keywords(keywords)
+        except GenerationError as gen_exc:
+            print(f"ERROR: could not auto-generate new keywords: {gen_exc}", file=sys.stderr)
+            return 1
+
+        if not new_entries:
+            print("Keyword auto-generation produced no valid new candidates this run.")
+            return 0
+
+        keywords.extend(new_entries)
+        save_keywords(keywords)
+        print(
+            f"Added {len(new_entries)} new keyword(s) to "
+            f"{KEYWORDS_PATH.relative_to(REPO_ROOT)}: "
+            + ", ".join(k["id"] for k in new_entries)
+        )
+        keyword = pick_keyword(keywords, None)
 
     print(f"Generating article for keyword id='{keyword['id']}' ({keyword['keyword']})")
 
