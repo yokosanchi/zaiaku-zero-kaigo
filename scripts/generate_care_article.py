@@ -25,6 +25,8 @@ BLOG_DIR = REPO_ROOT / "src" / "content" / "blog"
 
 MIN_CHARS = 2500
 MAX_CHARS = 4500
+MIN_H2 = 2
+MAX_H2 = 7
 MAX_ATTEMPTS = 2  # 1 initial generation + 1 feedback-driven retry
 
 # 医療的・断定的な表現。YMYL領域での過度な断定・誤解を招く表現を禁止する。
@@ -92,6 +94,7 @@ def build_system_prompt() -> str:
 - 医療行為や病状について断定的な診断・予後を述べないこと。
 - 「治る」「完治」「100%改善」「必ず効く」「医学的診断」等、効果や治癒を保証・断定する表現は絶対に使用しないこと。
 - あくまで一般的な情報提供である旨を意識した、誠実で控えめな表現を用いること。
+- 「専門家に相談してください」「地域包括支援センターに相談しましょう」といった相談の呼びかけは、記事全体を通して1〜2箇所程度の自然な言及にとどめること。免責事項は本文とは別に機械的に末尾へ付与されるため、本文中で何度も繰り返す必要はない。記事自体が、読者に具体的な考え方の転換や行動のヒントを与えることを最優先とする。
 
 # 文体・読みやすさ(重要)
 読者は、疲れ切った状態でスマートフォンから読んでいる介護者です。専門家としての信頼感は保ちつつ、内容が頭に入ってきやすい文章にしてください。
@@ -106,7 +109,7 @@ def build_system_prompt() -> str:
 - 先頭にYAML Frontmatterを ``---`` で囲んで記載し、以下のキーを必ず含めること:
   title, description, pubDate, keyword, category, target_searcher, conversion_type
 - Frontmatterの直後、本文の先頭に「# 」で始まるH1見出しを1つだけ記載すること(記事タイトル)。
-- 本文中に「## 」で始まるH2見出しを3つ以上使い、論理的なセクション構成にすること。
+- 本文中に「## 」で始まるH2見出しを4〜6個使い、論理的なセクション構成にすること。「よくある質問」「周囲の人ができること」のような付け足し的なセクションを増やして見出し数を水増ししないこと。1つ1つのセクションにしっかり内容を持たせ、細切れの箇条書きの寄せ集めにしないこと。
 - 本文(Frontmatterを除く)の文字数は日本語で2500文字〜4500文字の範囲に収めること。
 - 免責事項や地域包括支援センターへの相談を促す文言は自動的に別途付与されるため、本文の最後に自分で書く必要はない。
 """
@@ -211,8 +214,11 @@ def evaluate_article(raw: str) -> tuple[bool, list[str], dict | None, str]:
     h2_matches = re.findall(r"(?m)^##\s+.+$", body)
     if len(h1_matches) != 1:
         errors.append(f"H1見出し(# )は1つである必要がありますが、{len(h1_matches)}個検出されました")
-    if len(h2_matches) < 2:
-        errors.append(f"H2見出し(## )は2つ以上である必要がありますが、{len(h2_matches)}個検出されました")
+    if not (MIN_H2 <= len(h2_matches) <= MAX_H2):
+        errors.append(
+            f"H2見出し(## )は{MIN_H2}〜{MAX_H2}個である必要がありますが、{len(h2_matches)}個検出されました"
+            "（見出しを増やしすぎず、1セクションにしっかり内容を持たせてください）"
+        )
 
     char_count = len(body.strip())
     if not (MIN_CHARS <= char_count <= MAX_CHARS):
