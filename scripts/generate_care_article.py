@@ -48,13 +48,64 @@ REQUIRED_FRONTMATTER_KEYS = [
     "conversion_type",
 ]
 
-DISCLAIMER = """
+DISCLAIMER_HEADER = """
 ---
 
 **この記事について**
 
 本記事は一般的な情報提供を目的としたものであり、個別の医療的・専門的な助言に代わるものではありません。介護に関するお悩みやご不安がある場合は、お住まいの地域の**地域包括支援センター**や、ケアマネジャー、かかりつけの医師などの専門家にご相談ください。介護保険サービスの利用については、市区町村の窓口でも相談を受け付けています。
 """
+
+# 公的機関・公的な情報源。LLMに出典を自由に書かせるとハルシネーション
+# (存在しない文書・URLの捏造)のリスクがあるため、カテゴリごとに
+# 事前に検証済みの実在する情報源だけを機械的に付与する。
+REFERENCE_SOURCES: dict[str, list[tuple[str, str]]] = {
+    "施設入所": [
+        ("介護サービス情報公表システム(厚生労働省)", "https://www.kaigokensaku.mhlw.go.jp/"),
+        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
+    ],
+    "心理的負担": [
+        ("こころの耳(厚生労働省 働く人のメンタルヘルス・ポータルサイト)", "https://kokoro.mhlw.go.jp/"),
+        ("厚生労働省", "https://www.mhlw.go.jp/"),
+    ],
+    "サービス利用": [
+        ("介護サービス情報公表システム(厚生労働省)", "https://www.kaigokensaku.mhlw.go.jp/"),
+        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
+    ],
+    "家族関係": [
+        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
+        ("厚生労働省", "https://www.mhlw.go.jp/"),
+    ],
+    "離職": [
+        ("厚生労働省", "https://www.mhlw.go.jp/"),
+        ("こころの耳(厚生労働省 働く人のメンタルヘルス・ポータルサイト)", "https://kokoro.mhlw.go.jp/"),
+    ],
+    "ショートステイ": [
+        ("介護サービス情報公表システム(厚生労働省)", "https://www.kaigokensaku.mhlw.go.jp/"),
+        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
+    ],
+    "認知症ケア": [
+        ("厚生労働省", "https://www.mhlw.go.jp/"),
+        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
+    ],
+    "訪問介護": [
+        ("介護サービス情報公表システム(厚生労働省)", "https://www.kaigokensaku.mhlw.go.jp/"),
+        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
+    ],
+    "家族間トラブル": [
+        ("法テラス(日本司法支援センター)", "https://www.houterasu.or.jp/"),
+        ("全国社会福祉協議会", "https://www.shakyo.or.jp/"),
+    ],
+    "セルフケア": [
+        ("こころの耳(厚生労働省 働く人のメンタルヘルス・ポータルサイト)", "https://kokoro.mhlw.go.jp/"),
+        ("厚生労働省", "https://www.mhlw.go.jp/"),
+    ],
+}
+
+DEFAULT_REFERENCES: list[tuple[str, str]] = [
+    ("厚生労働省", "https://www.mhlw.go.jp/"),
+    ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
+]
 
 
 class GenerationError(RuntimeError):
@@ -230,8 +281,20 @@ def evaluate_article(raw: str) -> tuple[bool, list[str], dict | None, str]:
     return passed, errors, frontmatter, body
 
 
-def append_disclaimer(body: str) -> str:
-    return body.rstrip() + "\n" + DISCLAIMER + "\n"
+def build_references_block(category: str) -> str:
+    sources = REFERENCE_SOURCES.get(category, DEFAULT_REFERENCES)
+    links = "\n".join(f"- [{name}]({url})" for name, url in sources)
+    return f"""
+---
+
+**参考情報**
+
+{links}
+"""
+
+
+def append_disclaimer(body: str, category: str) -> str:
+    return body.rstrip() + "\n" + build_references_block(category) + DISCLAIMER_HEADER + "\n"
 
 
 def assemble_markdown(frontmatter: dict, body: str) -> str:
@@ -256,7 +319,7 @@ def generate_article(keyword: dict) -> str:
             frontmatter.setdefault("target_searcher", keyword["target_searcher"])
             frontmatter.setdefault("conversion_type", keyword["conversion_type"])
             frontmatter["pubDate"] = pub_date
-            final_body = append_disclaimer(body)
+            final_body = append_disclaimer(body, keyword["category"])
             return assemble_markdown(frontmatter, final_body)
 
         last_errors = errors
