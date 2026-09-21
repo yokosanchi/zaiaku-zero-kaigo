@@ -21,6 +21,11 @@ const { Content } = await post.render();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{post.data.title}</title>
     <meta name="description" content={post.data.description} />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="page">
@@ -65,17 +70,20 @@ const { Content } = await post.render();
     border-radius: 999px;
     background: #fdf1df;
     color: #9c6530;
+    font-family: "Zen Maru Gothic", system-ui, sans-serif;
     font-weight: 700;
     font-size: 0.9rem;
   }
 
   article :global(h1) {
-    font-size: 1.6rem;
+    font-family: "Zen Maru Gothic", system-ui, sans-serif;
+    font-size: 1.7rem;
     line-height: 1.5;
   }
 
   article :global(h2) {
     margin-top: 2rem;
+    font-family: "Zen Maru Gothic", system-ui, sans-serif;
     font-size: 1.2rem;
     border-left: 4px solid #d9a35f;
     padding-left: 0.6rem;
