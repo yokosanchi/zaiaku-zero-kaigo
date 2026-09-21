@@ -1,0 +1,31 @@
+---
+// 「ひらいた輪」ロゴマーク。閉じきらない円で、罪悪感の輪から一歩抜け出すイメージを表す。
+// 意図の文章は src/pages/index.astro の「このサイトについて」内で説明している。
+export interface Props {
+  size?: number;
+}
+
+const { size = 40 } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 100 100"
+  width={size}
+  height={size}
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="罪悪感ゼロ介護のロゴ"
+>
+  <circle
+    cx="50"
+    cy="52"
+    r="34"
+    stroke="#b5793c"
+    stroke-width="9"
+    stroke-dasharray="184 46"
+    stroke-dashoffset="-58"
+    stroke-linecap="round"
+  ></circle>
+  <circle cx="62" cy="18" r="5.5" fill="#8f5a26"></circle>
+</svg>

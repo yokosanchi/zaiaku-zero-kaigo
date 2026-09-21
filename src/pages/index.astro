@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Logo from "../components/Logo.astro";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -50,17 +51,24 @@ const metaFor = (category: string): CategoryMeta =>
       href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
     <div class="page">
       <header>
-        <h1>罪悪感ゼロ介護</h1>
+        <div class="brand">
+          <Logo size={44} />
+          <h1>罪悪感ゼロ介護</h1>
+        </div>
         <p class="lead">
           「施設に入れるなんて親不孝じゃないか」「自分の時間を優先していいのか」——介護のなかで生まれるその罪悪感は、あなたが真剣に向き合ってきた証です。同じ悩みを抱える方の質問形式で、専門家の視点からの考え方と頼れる相談先を紹介しています。
         </p>
         <p class="about">
           <strong>このサイトについて：</strong
           >介護福祉士・社会福祉士の知見をもとにした方針で記事を作成し、公開前に内容のチェックを行っています。個別のご事情については、お近くの<strong>地域包括支援センター</strong>や専門家にご相談ください。
+          <br />
+          <strong>ロゴについて：</strong
+          >閉じきらない輪は、ぐるぐる巡っていた罪悪感の輪から一歩抜け出せますように、という思いを込めています。輪からこぼれた小さな点は、そこから抜け出したあなた自身です。
         </p>
       </header>
 
@@ -148,10 +156,17 @@ const metaFor = (category: string): CategoryMeta =>
     line-height: 1.8;
   }
 
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
   header h1 {
     font-family: "Zen Maru Gothic", system-ui, sans-serif;
     font-size: 2.1rem;
-    margin-bottom: 0.75rem;
+    margin: 0;
   }
 
   .lead {
