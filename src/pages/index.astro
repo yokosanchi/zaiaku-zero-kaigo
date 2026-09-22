@@ -103,6 +103,20 @@ const metaFor = (category: string): CategoryMeta =>
         )
       }
 
+      {
+        posts.length > 0 && (
+          <div class="search-wrap">
+            <input
+              type="search"
+              id="article-search"
+              class="search-box"
+              placeholder="気になるキーワードで探す（例：施設、デイサービス、仕事）"
+              aria-label="記事をキーワードで検索"
+            />
+          </div>
+        )
+      }
+
       <main>
         {
           categories.length === 0 && (
@@ -124,7 +138,7 @@ const metaFor = (category: string): CategoryMeta =>
                   {posts
                     .filter((post) => post.data.category === category)
                     .map((post) => (
-                      <li>
+                      <li data-search={`${post.data.keyword} ${post.data.description}`.toLowerCase()}>
                         <a
                           class="qa-card"
                           style={`border-left-color: ${meta.color}`}
@@ -143,8 +157,48 @@ const metaFor = (category: string): CategoryMeta =>
             );
           })
         }
+        <p id="no-results" class="empty" hidden>
+          該当する記事が見つかりませんでした。別のキーワードで試してみてください。
+        </p>
       </main>
     </div>
+
+    <script>
+      const searchInput = document.getElementById(
+        "article-search"
+      ) as HTMLInputElement | null;
+      const sections = Array.from(document.querySelectorAll<HTMLElement>(".category"));
+      const noResults = document.getElementById("no-results");
+
+      function applyFilter() {
+        const q = (searchInput?.value ?? "").trim().toLowerCase();
+        let totalVisible = 0;
+
+        sections.forEach((section) => {
+          let visibleInSection = 0;
+          section.querySelectorAll<HTMLLIElement>("li").forEach((li) => {
+            const match = !q || (li.dataset.search ?? "").includes(q);
+            li.hidden = !match;
+            if (match) visibleInSection++;
+          });
+          section.hidden = visibleInSection === 0;
+          totalVisible += visibleInSection;
+        });
+
+        if (noResults) noResults.hidden = totalVisible !== 0;
+      }
+
+      searchInput?.addEventListener("input", applyFilter);
+
+      document.querySelectorAll<HTMLAnchorElement>(".nav-chip").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          if (searchInput && searchInput.value) {
+            searchInput.value = "";
+            applyFilter();
+          }
+        });
+      });
+    </script>
   </body>
 </html>
 
@@ -158,7 +212,7 @@ const metaFor = (category: string): CategoryMeta =>
   }
 
   .page {
-    max-width: 780px;
+    max-width: 1040px;
     margin: 0 auto;
     padding: 2.5rem 1.25rem 4rem;
     font-family: system-ui, sans-serif;
@@ -258,6 +312,30 @@ const metaFor = (category: string): CategoryMeta =>
     font-size: 0.95rem;
   }
 
+  .search-wrap {
+    margin-top: 1.25rem;
+  }
+
+  .search-box {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e8dcc4;
+    border-radius: 0.75rem;
+    background: #fff;
+    font-family: system-ui, sans-serif;
+    font-size: 0.95rem;
+    color: #3d3527;
+  }
+
+  .search-box::placeholder {
+    color: #9c927f;
+  }
+
+  .search-box:focus {
+    outline: 2px solid #b5793c;
+    outline-offset: 1px;
+  }
+
   .category {
     margin-top: 2.5rem;
     scroll-margin-top: 1.25rem;
@@ -292,15 +370,21 @@ const metaFor = (category: string): CategoryMeta =>
     list-style: none;
     margin: 1rem 0 0;
     padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.9rem;
+  }
+
+  .qa-list li {
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
   }
 
   .qa-card {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 0.35rem;
+    width: 100%;
     padding: 1rem 1.1rem;
     border: 1px solid #e8dcc4;
     border-left-width: 4px;
@@ -324,6 +408,10 @@ const metaFor = (category: string): CategoryMeta =>
   .desc {
     font-size: 0.9rem;
     color: #6b6152;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .cta {
