@@ -66,43 +66,27 @@ DISCLAIMER_HEADER = """
 # (存在しない文書・URLの捏造)のリスクがあるため、カテゴリごとに
 # 事前に検証済みの実在する情報源だけを機械的に付与する。
 REFERENCE_SOURCES: dict[str, list[tuple[str, str]]] = {
-    "施設入所": [
+    "施設入所の罪悪感": [
         ("介護サービス情報公表システム(厚生労働省)", "https://www.kaigokensaku.mhlw.go.jp/"),
         ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
     ],
-    "心理的負担": [
-        ("こころの耳(厚生労働省 働く人のメンタルヘルス・ポータルサイト)", "https://kokoro.mhlw.go.jp/"),
+    "認知症介護の罪悪感": [
         ("厚生労働省", "https://www.mhlw.go.jp/"),
+        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
     ],
-    "サービス利用": [
+    "在宅サービス利用の罪悪感": [
         ("介護サービス情報公表システム(厚生労働省)", "https://www.kaigokensaku.mhlw.go.jp/"),
         ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
     ],
-    "家族関係": [
-        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
-        ("厚生労働省", "https://www.mhlw.go.jp/"),
-    ],
-    "離職": [
+    "介護離職・仕事との両立": [
         ("厚生労働省", "https://www.mhlw.go.jp/"),
         ("こころの耳(厚生労働省 働く人のメンタルヘルス・ポータルサイト)", "https://kokoro.mhlw.go.jp/"),
     ],
-    "ショートステイ": [
-        ("介護サービス情報公表システム(厚生労働省)", "https://www.kaigokensaku.mhlw.go.jp/"),
-        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
-    ],
-    "認知症ケア": [
-        ("厚生労働省", "https://www.mhlw.go.jp/"),
-        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
-    ],
-    "訪問介護": [
-        ("介護サービス情報公表システム(厚生労働省)", "https://www.kaigokensaku.mhlw.go.jp/"),
-        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
-    ],
-    "家族間トラブル": [
+    "家族関係・負担の偏り": [
         ("法テラス(日本司法支援センター)", "https://www.houterasu.or.jp/"),
-        ("全国社会福祉協議会", "https://www.shakyo.or.jp/"),
+        ("WAM NET(福祉医療機構)", "https://www.wam.go.jp/"),
     ],
-    "セルフケア": [
+    "自分を大切にする罪悪感": [
         ("こころの耳(厚生労働省 働く人のメンタルヘルス・ポータルサイト)", "https://kokoro.mhlw.go.jp/"),
         ("厚生労働省", "https://www.mhlw.go.jp/"),
     ],

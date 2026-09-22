@@ -11,16 +11,12 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
 type CategoryMeta = { icon: string; color: string; bg: string; slug: string };
 
 const CATEGORY_META: Record<string, CategoryMeta> = {
-  施設入所: { icon: "🏠", color: "#b5793c", bg: "#f6ead9", slug: "shisetsu-nyusho" },
-  心理的負担: { icon: "💭", color: "#6b8f71", bg: "#e6efe4", slug: "shinriteki-futan" },
-  サービス利用: { icon: "🛎️", color: "#5c80a8", bg: "#e3ebf3", slug: "service-riyou" },
-  家族関係: { icon: "👨‍👩‍👧", color: "#a85c78", bg: "#f3e3ea", slug: "kazoku-kankei" },
-  離職: { icon: "💼", color: "#8a7a4a", bg: "#eee9dd", slug: "rishoku" },
-  ショートステイ: { icon: "🌙", color: "#6b8f71", bg: "#e6efe4", slug: "short-stay" },
-  認知症ケア: { icon: "🧠", color: "#5c80a8", bg: "#e3ebf3", slug: "ninchisho-care" },
-  訪問介護: { icon: "🚪", color: "#b5793c", bg: "#f6ead9", slug: "houmon-kaigo" },
-  家族間トラブル: { icon: "⚖️", color: "#a85c78", bg: "#f3e3ea", slug: "kazokukan-trouble" },
-  セルフケア: { icon: "🌿", color: "#8a7a4a", bg: "#eee9dd", slug: "self-care" },
+  施設入所の罪悪感: { icon: "🏠", color: "#b5793c", bg: "#f6ead9", slug: "shisetsu-nyusho" },
+  認知症介護の罪悪感: { icon: "🧠", color: "#5c80a8", bg: "#e3ebf3", slug: "ninchisho-care" },
+  在宅サービス利用の罪悪感: { icon: "🛎️", color: "#6b8f71", bg: "#e6efe4", slug: "zaitaku-service" },
+  "介護離職・仕事との両立": { icon: "💼", color: "#8a7a4a", bg: "#eee9dd", slug: "rishoku-ryouritsu" },
+  "家族関係・負担の偏り": { icon: "👨‍👩‍👧", color: "#a85c78", bg: "#f3e3ea", slug: "kazoku-futan" },
+  自分を大切にする罪悪感: { icon: "🌿", color: "#8074a8", bg: "#ece7f3", slug: "self-care" },
 };
 
 const DEFAULT_META: Omit<CategoryMeta, "slug"> = {
