@@ -1,0 +1,47 @@
+name: Weekly SEO Performance Report
+
+on:
+  schedule:
+    # 23:00 UTC every Sunday = 08:00 JST every Monday
+    - cron: "0 23 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Analyze Search Console performance
+        env:
+          GSC_SERVICE_ACCOUNT_KEY: ${{ secrets.GSC_SERVICE_ACCOUNT_KEY }}
+          GSC_SITE_URL: ${{ vars.GSC_SITE_URL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+        run: python scripts/analyze_performance.py
+        # Writes scripts/performance_report.md only when there's at least
+        # one underperforming page to report. Missing/invalid Search
+        # Console credentials, an API failure, or nothing to flag all
+        # degrade to "no report" rather than failing the job.
+
+      - name: Create report issue
+        if: hashFiles('scripts/performance_report.md') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "SEOパフォーマンスレポート $(date -u +'%Y-%m-%d')" \
+            --body-file scripts/performance_report.md

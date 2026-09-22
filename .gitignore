@@ -6,3 +6,4 @@ dist/
 __pycache__/
 *.pyc
 scripts/search_console_insights.json
+scripts/performance_report.md

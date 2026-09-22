@@ -44,16 +44,7 @@ def normalize(text: str) -> str:
     return "".join(text.split()).lower()
 
 
-def fetch_query_rows(service_account_info: dict, site_url: str) -> list[dict]:
-    from google.oauth2 import service_account
-    from googleapiclient.discovery import build
-
-    credentials = service_account.Credentials.from_service_account_info(
-        service_account_info,
-        scopes=["https://www.googleapis.com/auth/webmasters.readonly"],
-    )
-    service = build("searchconsole", "v1", credentials=credentials)
-
+def fetch_query_rows(service, site_url: str) -> list[dict]:
     end_date = dt.date.today() - dt.timedelta(days=GSC_DATA_LAG_DAYS)
     start_date = end_date - dt.timedelta(days=LOOKBACK_DAYS)
 
@@ -76,23 +67,18 @@ def write_insights(rows: list[dict]) -> None:
 
 
 def main() -> int:
-    service_account_json = os.environ.get("GSC_SERVICE_ACCOUNT_KEY")
-    site_url = os.environ.get("GSC_SITE_URL")
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from gsc_client import GSCUnavailable, build_service
 
-    if not service_account_json or not site_url:
-        print("GSC_SERVICE_ACCOUNT_KEY or GSC_SITE_URL not set; skipping Search Console fetch.")
+    try:
+        service, site_url = build_service()
+    except GSCUnavailable as exc:
+        print(f"{exc}; skipping Search Console fetch.")
         write_insights([])
         return 0
 
     try:
-        service_account_info = json.loads(service_account_json)
-    except json.JSONDecodeError as exc:
-        print(f"WARNING: GSC_SERVICE_ACCOUNT_KEY is not valid JSON, skipping: {exc}", file=sys.stderr)
-        write_insights([])
-        return 0
-
-    try:
-        rows = fetch_query_rows(service_account_info, site_url)
+        rows = fetch_query_rows(service, site_url)
     except Exception as exc:  # noqa: BLE001 - any auth/network/quota failure must not break publishing
         print(f"WARNING: Search Console fetch failed, continuing without it: {exc}", file=sys.stderr)
         write_insights([])

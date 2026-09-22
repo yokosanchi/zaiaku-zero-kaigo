@@ -220,6 +220,17 @@ def extract_json_array(text: str) -> str:
     return cleaned[start : end + 1]
 
 
+def extract_json_object(text: str) -> str:
+    cleaned = text.strip()
+    cleaned = re.sub(r"^```(json)?", "", cleaned.strip())
+    cleaned = re.sub(r"```$", "", cleaned.strip())
+    start = cleaned.find("{")
+    end = cleaned.rfind("}")
+    if start == -1 or end == -1 or end < start:
+        raise GenerationError(f"expected a JSON object but got: {text[:200]!r}")
+    return cleaned[start : end + 1]
+
+
 def validate_keyword_candidate(
     entry: object, existing_ids: set[str], existing_keyword_texts: set[str]
 ) -> list[str]:
