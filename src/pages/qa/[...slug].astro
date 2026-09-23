@@ -42,6 +42,10 @@ const { Content } = await post.render();
         </article>
         <CareAffiliateBanner conversionType={post.data.conversion_type} />
       </main>
+
+      <footer class="site-footer">
+        <a href="/services/">頼れる相談先・サービス一覧</a>
+      </footer>
     </div>
   </body>
 </html>
@@ -94,5 +98,22 @@ const { Content } = await post.render();
     font-size: 1.2rem;
     border-left: 4px solid #d9a35f;
     padding-left: 0.6rem;
+  }
+
+  .site-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e8dcc4;
+    text-align: center;
+  }
+
+  .site-footer a {
+    font-size: 0.85rem;
+    color: #9c927f;
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    text-decoration: underline;
   }
 </style>

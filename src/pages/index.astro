@@ -161,6 +161,10 @@ const metaFor = (category: string): CategoryMeta =>
           該当する記事が見つかりませんでした。別のキーワードで試してみてください。
         </p>
       </main>
+
+      <footer class="site-footer">
+        <a href="/services/">頼れる相談先・サービス一覧</a>
+      </footer>
     </div>
 
     <script>
@@ -422,5 +426,22 @@ const metaFor = (category: string): CategoryMeta =>
 
   .empty {
     color: #6b6152;
+  }
+
+  .site-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e8dcc4;
+    text-align: center;
+  }
+
+  .site-footer a {
+    font-size: 0.85rem;
+    color: #9c927f;
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    text-decoration: underline;
   }
 </style>

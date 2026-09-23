@@ -1,0 +1,256 @@
+---
+import Logo from "../components/Logo.astro";
+
+// このページ専用のトグルではなく、記事内のアフィリエイトバナーと同じ
+// ENABLE_AFFILIATE を参照する。Viteはbooleanに型強制することがあるため
+// 文字列・boolean両対応にしている（CareAffiliateBanner.astroと同じ理由）。
+const enableAffiliateEnv = import.meta.env.ENABLE_AFFILIATE;
+const showPrivateServices = enableAffiliateEnv === true || enableAffiliateEnv === "true";
+
+type Resource = {
+  name: string;
+  description: string;
+  href?: string;
+  sponsored?: boolean;
+  trackingPixelSrc?: string;
+};
+
+const PUBLIC_RESOURCES: Resource[] = [
+  {
+    name: "地域包括支援センター",
+    description:
+      "介護・医療・福祉について、お住まいの地域で無料相談できる公的窓口です。お近くのセンターは市区町村の窓口で確認できます。",
+  },
+  {
+    name: "介護サービス情報公表システム",
+    description: "厚生労働省が運営する、全国の介護施設・事業所を検索できる公式データベースです。",
+    href: "https://www.kaigokensaku.mhlw.go.jp/",
+  },
+  {
+    name: "WAM NET",
+    description: "福祉医療機構が運営する、福祉・介護に関する総合情報サイトです。",
+    href: "https://www.wam.go.jp/",
+  },
+  {
+    name: "こころの耳",
+    description: "厚生労働省が運営する、働く人のメンタルヘルスに関するポータルサイトです。",
+    href: "https://kokoro.mhlw.go.jp/",
+  },
+  {
+    name: "法テラス",
+    description: "日本司法支援センター。家族間のトラブルなど法的な悩みの相談窓口です。",
+    href: "https://www.houterasu.or.jp/",
+  },
+  {
+    name: "全国社会福祉協議会",
+    description: "地域の福祉活動を支える全国組織です。",
+    href: "https://www.shakyo.or.jp/",
+  },
+  {
+    name: "厚生労働省",
+    description: "介護保険制度全般についての公式情報です。",
+    href: "https://www.mhlw.go.jp/",
+  },
+];
+
+const PRIVATE_RESOURCES: Resource[] = [
+  {
+    name: "イチロウ",
+    description:
+      "24時間365日対応、オーダーメイドの介護保険外サービスです。時間や回数の制約なく、あなたやご家族に合った形で介護のプロに任せられます。（対応エリア：東京都・神奈川県・千葉県・埼玉県・愛知県の一部）",
+    href: "https://px.a8.net/svt/ejp?a8mat=4BCH7Q+2LH4AQ+54PG+5YRHE",
+    sponsored: true,
+    trackingPixelSrc: "https://www13.a8.net/0.gif?a8mat=4BCH7Q+2LH4AQ+54PG+5YRHE",
+  },
+];
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>頼れる相談先・サービス一覧</title>
+    <meta
+      name="description"
+      content="介護のお悩みに応じて利用できる、公的な相談窓口から民間サービスまでをまとめた一覧です。"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div class="page">
+      <a class="back-link" href="/">
+        <Logo size={22} />
+        ← お悩み一覧に戻る
+      </a>
+
+      <h1>頼れる相談先・サービス一覧</h1>
+      <p class="lead">
+        介護のお悩みは、一人で抱え込まなくて大丈夫です。無料で使える公的な窓口から、介護保険では対応しきれない部分を補ってくれる民間サービスまで、状況に応じて頼れる先をまとめました。
+      </p>
+
+      <section class="resource-group">
+        <h2>公的な相談窓口・情報サービス</h2>
+        <ul class="resource-list">
+          {
+            PUBLIC_RESOURCES.map((r) => (
+              <li class="resource-item">
+                <p class="resource-name">
+                  {r.href ? (
+                    <a href={r.href} target="_blank" rel="noopener">
+                      {r.name}
+                    </a>
+                  ) : (
+                    r.name
+                  )}
+                </p>
+                <p class="resource-desc">{r.description}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      {
+        showPrivateServices && PRIVATE_RESOURCES.length > 0 && (
+          <section class="resource-group">
+            <h2>介護保険外でも頼れる民間サービス</h2>
+            <ul class="resource-list">
+              {PRIVATE_RESOURCES.map((r) => (
+                <li class="resource-item">
+                  <p class="resource-name">
+                    {r.sponsored && <span class="pr-badge">PR</span>}
+                    <a
+                      href={r.href}
+                      {...(r.sponsored
+                        ? { target: "_blank", rel: "nofollow sponsored noopener" }
+                        : { target: "_blank", rel: "noopener" })}
+                    >
+                      {r.name}
+                    </a>
+                  </p>
+                  <p class="resource-desc">{r.description}</p>
+                  {r.trackingPixelSrc && (
+                    <img
+                      src={r.trackingPixelSrc}
+                      width="1"
+                      height="1"
+                      alt=""
+                      style="border:0; position:absolute;"
+                    />
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+  </body>
+</html>
+
+<style>
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+    font-family: system-ui, sans-serif;
+    color: #3d3527;
+    background: #fffdf8;
+    line-height: 1.85;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+    color: #9c6530;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  h1 {
+    font-family: "Zen Maru Gothic", system-ui, sans-serif;
+    font-size: 1.7rem;
+    margin: 0 0 0.9rem;
+  }
+
+  .lead {
+    color: #5c5344;
+    font-size: 0.95rem;
+    margin: 0 0 2.25rem;
+  }
+
+  .resource-group {
+    margin-bottom: 2.25rem;
+  }
+
+  .resource-group h2 {
+    font-family: "Zen Maru Gothic", system-ui, sans-serif;
+    font-size: 1.1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e8dcc4;
+    margin: 0 0 1rem;
+  }
+
+  .resource-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .resource-item {
+    padding: 0.9rem 1.1rem;
+    border: 1px solid #e8dcc4;
+    border-radius: 0.65rem;
+    background: #fff;
+  }
+
+  .resource-name {
+    margin: 0 0 0.3rem;
+    font-family: "Zen Maru Gothic", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  .resource-name a {
+    color: #8f5a26;
+    text-decoration: none;
+  }
+
+  .resource-name a:hover {
+    text-decoration: underline;
+  }
+
+  .resource-desc {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #6b6152;
+  }
+
+  .pr-badge {
+    display: inline-block;
+    margin-right: 0.4rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 0.3rem;
+    background: #8f5a26;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+  }
+</style>
