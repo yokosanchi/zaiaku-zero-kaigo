@@ -40,7 +40,8 @@ const jstDateLabel = new Intl.DateTimeFormat("ja-JP", {
   day: "numeric",
 });
 const todayKey = jstDateKey.format(new Date());
-const isUpdatedToday = latestPost ? jstDateKey.format(latestPost.data.pubDate) === todayKey : false;
+const isNewToday = (post: (typeof posts)[number]) => jstDateKey.format(post.data.pubDate) === todayKey;
+const isUpdatedToday = latestPost ? isNewToday(latestPost) : false;
 const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate) : null;
 ---
 
@@ -76,9 +77,12 @@ const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate
           latestPost && (
             <div class={`update-status${isUpdatedToday ? " is-today" : ""}`}>
               <span class="update-dot" aria-hidden="true" />
-              <span class="update-text">
-                {isUpdatedToday ? "本日、新しい記事を更新しました" : `最終更新：${latestDateLabel}`}
+              <span class="update-label">
+                {isUpdatedToday ? "本日更新：" : `最終更新（${latestDateLabel}）：`}
               </span>
+              <a class="update-link" href={`/qa/${latestPost.slug}/`}>
+                {latestPost.data.keyword}
+              </a>
               <span class="update-freq">毎日更新中</span>
             </div>
           )
@@ -96,8 +100,8 @@ const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate
               </p>
             </div>
           </div>
-          <div class="about-row">
-            <span class="about-icon" aria-hidden="true"><Logo size={20} /></span>
+          <div class="about-row logo-row">
+            <span class="logo-showcase" aria-hidden="true"><Logo size={72} /></span>
             <div>
               <p class="about-label">ロゴについて</p>
               <p class="about-text">
@@ -169,7 +173,10 @@ const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate
                           style={`border-left-color: ${meta.color}`}
                           href={`/qa/${post.slug}/`}
                         >
-                          <span class="q">Q. {post.data.keyword}</span>
+                          <span class="q">
+                            {isNewToday(post) && <span class="new-badge">NEW</span>}
+                            Q. {post.data.keyword}
+                          </span>
                           <span class="desc">{post.data.description}</span>
                           <span class="cta" style={`color: ${meta.color}`}>
                             回答を見る →
@@ -269,15 +276,16 @@ const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate
   }
 
   .update-status {
-    display: inline-flex;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0.4rem 0.55rem;
     margin-top: 1rem;
-    padding: 0.45rem 0.95rem;
-    border-radius: 999px;
+    padding: 0.55rem 0.95rem;
+    border-radius: 0.7rem;
     background: #f3ede0;
     color: #5c5344;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
   }
 
   .update-status.is-today {
@@ -298,9 +306,25 @@ const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate
     box-shadow: 0 0 0 3px rgba(74, 143, 74, 0.18);
   }
 
-  .update-text {
+  .update-label {
     font-family: "Zen Maru Gothic", system-ui, sans-serif;
     font-weight: 700;
+  }
+
+  .update-link {
+    font-weight: 700;
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgba(92, 83, 68, 0.35);
+    text-underline-offset: 0.2em;
+  }
+
+  .update-status.is-today .update-link {
+    text-decoration-color: rgba(61, 107, 61, 0.35);
+  }
+
+  .update-link:hover {
+    text-decoration-color: currentColor;
   }
 
   .update-freq {
@@ -309,6 +333,7 @@ const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate
     background: rgba(255, 255, 255, 0.65);
     font-size: 0.72rem;
     font-weight: 600;
+    margin-left: auto;
   }
 
   .about {
@@ -339,6 +364,22 @@ const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate
     background: #fff;
     font-size: 1rem;
     margin-top: 0.1rem;
+  }
+
+  .logo-row {
+    align-items: center;
+  }
+
+  .logo-showcase {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 5.25rem;
+    height: 5.25rem;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   }
 
   .about-label {
@@ -475,6 +516,19 @@ const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate
     font-family: "Zen Maru Gothic", system-ui, sans-serif;
     font-weight: 700;
     color: #3d3527;
+  }
+
+  .new-badge {
+    display: inline-block;
+    margin-right: 0.4rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.3rem;
+    background: #4a8f4a;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
   }
 
   .desc {
