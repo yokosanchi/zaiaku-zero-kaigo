@@ -8,13 +8,20 @@ export interface Props {
 
 const { conversionType } = Astro.props;
 
-const isEnabled = import.meta.env.ENABLE_AFFILIATE === "true";
+// Vite coerces "true"/"false"-looking env values to real booleans when
+// injecting import.meta.env at build time (observed even though shell env
+// vars are always strings), so a strict === "true" check silently never
+// matches. Accept both the boolean and the string form.
+const enableAffiliateEnv = import.meta.env.ENABLE_AFFILIATE;
+const isEnabled = enableAffiliateEnv === true || enableAffiliateEnv === "true";
 
 type OfferContent = {
   heading: string;
   body: string;
   ctaLabel: string;
   ctaHref: string;
+  sponsored?: boolean;
+  trackingPixelSrc?: string;
 };
 
 const OFFERS: Record<string, OfferContent> = {
@@ -31,10 +38,12 @@ const OFFERS: Record<string, OfferContent> = {
     ctaHref: "#document-request",
   },
   訪問介護マッチング: {
-    heading: "近くの訪問介護事業者を探す",
-    body: "ご自宅の地域や希望の頻度に合わせて、信頼できる訪問介護事業者とのマッチングをサポートします。",
-    ctaLabel: "訪問介護を探してみる",
-    ctaHref: "#homecare-matching",
+    heading: "介護保険では対応できない部分も、プロに頼れます",
+    body: "24時間365日対応、オーダーメイドの介護保険外サービス「イチロウ」。時間や回数の制約なく、あなたやご家族に合った形で介護のプロに任せられます。（対応エリア：東京都・神奈川県・千葉県・埼玉県・愛知県の一部）",
+    ctaLabel: "イチロウの詳細を見る",
+    ctaHref: "https://px.a8.net/svt/ejp?a8mat=4BCH7Q+2LH4AQ+54PG+5YRHE",
+    sponsored: true,
+    trackingPixelSrc: "https://www13.a8.net/0.gif?a8mat=4BCH7Q+2LH4AQ+54PG+5YRHE",
   },
 };
 
@@ -51,11 +60,27 @@ const offer = OFFERS[conversionType] ?? DEFAULT_OFFER;
 {
   isEnabled && (
     <aside class="care-affiliate-banner" data-conversion-type={conversionType}>
+      {offer.sponsored && <span class="care-affiliate-banner__pr">PR</span>}
       <p class="care-affiliate-banner__heading">{offer.heading}</p>
       <p class="care-affiliate-banner__body">{offer.body}</p>
-      <a class="care-affiliate-banner__cta" href={offer.ctaHref}>
+      <a
+        class="care-affiliate-banner__cta"
+        href={offer.ctaHref}
+        {...(offer.sponsored
+          ? { target: "_blank", rel: "nofollow sponsored noopener" }
+          : {})}
+      >
         {offer.ctaLabel}
       </a>
+      {offer.trackingPixelSrc && (
+        <img
+          src={offer.trackingPixelSrc}
+          width="1"
+          height="1"
+          alt=""
+          style="border:0; position:absolute;"
+        />
+      )}
     </aside>
   )
 }
@@ -67,6 +92,18 @@ const offer = OFFERS[conversionType] ?? DEFAULT_OFFER;
     border: 1px solid #e0d8c8;
     border-radius: 0.75rem;
     background: #fdfaf3;
+  }
+
+  .care-affiliate-banner__pr {
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 0.3rem;
+    background: #8f5a26;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
   }
 
   .care-affiliate-banner__heading {
