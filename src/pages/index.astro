@@ -30,6 +30,18 @@ const metaFor = (category: string): CategoryMeta =>
     ...DEFAULT_META,
     slug: encodeURIComponent(category),
   };
+
+const latestPost = posts[0];
+const jstDateKey = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Tokyo" });
+const jstDateLabel = new Intl.DateTimeFormat("ja-JP", {
+  timeZone: "Asia/Tokyo",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+const todayKey = jstDateKey.format(new Date());
+const isUpdatedToday = latestPost ? jstDateKey.format(latestPost.data.pubDate) === todayKey : false;
+const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate) : null;
 ---
 
 <!doctype html>
@@ -59,6 +71,19 @@ const metaFor = (category: string): CategoryMeta =>
         <p class="lead">
           「施設に入れるなんて親不孝じゃないか」「自分の時間を優先していいのか」——介護のなかで生まれるその罪悪感は、あなたが真剣に向き合ってきた証です。同じ悩みを抱える方の質問形式で、専門家の視点からの考え方と頼れる相談先を紹介しています。
         </p>
+
+        {
+          latestPost && (
+            <div class={`update-status${isUpdatedToday ? " is-today" : ""}`}>
+              <span class="update-dot" aria-hidden="true" />
+              <span class="update-text">
+                {isUpdatedToday ? "本日、新しい記事を更新しました" : `最終更新：${latestDateLabel}`}
+              </span>
+              <span class="update-freq">毎日更新中</span>
+            </div>
+          )
+        }
+
         <div class="about">
           <div class="about-row">
             <span class="about-icon" aria-hidden="true">ℹ️</span>
@@ -241,6 +266,49 @@ const metaFor = (category: string): CategoryMeta =>
   .lead {
     color: #5c5344;
     font-size: 0.98rem;
+  }
+
+  .update-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 1rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    background: #f3ede0;
+    color: #5c5344;
+    font-size: 0.82rem;
+  }
+
+  .update-status.is-today {
+    background: #e4f1e3;
+    color: #3d6b3d;
+  }
+
+  .update-dot {
+    flex-shrink: 0;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: #b5793c;
+  }
+
+  .update-status.is-today .update-dot {
+    background: #4a8f4a;
+    box-shadow: 0 0 0 3px rgba(74, 143, 74, 0.18);
+  }
+
+  .update-text {
+    font-family: "Zen Maru Gothic", system-ui, sans-serif;
+    font-weight: 700;
+  }
+
+  .update-freq {
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.65);
+    font-size: 0.72rem;
+    font-weight: 600;
   }
 
   .about {
