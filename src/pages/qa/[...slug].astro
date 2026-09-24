@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import CareAffiliateBanner from "../../components/CareAffiliateBanner.astro";
 import Logo from "../../components/Logo.astro";
+import Analytics from "../../components/Analytics.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -28,6 +29,7 @@ const { Content } = await post.render();
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Analytics />
   </head>
   <body>
     <div class="page">

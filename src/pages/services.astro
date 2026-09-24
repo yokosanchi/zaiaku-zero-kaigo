@@ -1,5 +1,6 @@
 ---
 import Logo from "../components/Logo.astro";
+import Analytics from "../components/Analytics.astro";
 
 // このページ専用のトグルではなく、記事内のアフィリエイトバナーと同じ
 // ENABLE_AFFILIATE を参照する。Viteはbooleanに型強制することがあるため
@@ -81,6 +82,7 @@ const PRIVATE_RESOURCES: Resource[] = [
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Analytics />
   </head>
   <body>
     <div class="page">

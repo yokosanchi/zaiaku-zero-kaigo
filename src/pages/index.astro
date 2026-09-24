@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Logo from "../components/Logo.astro";
+import Analytics from "../components/Analytics.astro";
 
 const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -61,6 +62,7 @@ const latestDateLabel = latestPost ? jstDateLabel.format(latestPost.data.pubDate
       rel="stylesheet"
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <Analytics />
   </head>
   <body>
     <div class="page">

@@ -64,6 +64,8 @@ jobs:
       - name: Build Astro site (sanity check)
         env:
           ENABLE_AFFILIATE: ${{ vars.ENABLE_AFFILIATE }}
+          # 実際の本番ビルドは Cloudflare 側で行われるため、ここは壊れていないかの確認用。
+          PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
         run: npm run build
         # Cloudflare Pages is connected directly to this GitHub repository
         # (dashboard Git integration), so it builds and deploys on its own

@@ -1,0 +1,84 @@
+---
+/**
+ * GA4（gtag.js）＋ アフィリエイトリンクのクリック計測。
+ * 各ページ（index / services / qa/[...slug]）の <head> で読み込む。
+ *
+ * - 測定IDは環境変数 PUBLIC_GA_MEASUREMENT_ID（例: G-XXXXXXXXXX）から読む。
+ *   未設定、または `astro dev` 中は何も出力しない（開発中のアクセスでデータを汚さないため）。
+ * - UTM（utm_source など）は gtag が page_location から自動で読み取るので、
+ *   ここでは URL を書き換えない・クエリを消さないことが大事。
+ * - アフィリエイトリンクのクリックは GA4 に `click_affiliate` イベントとして送る。
+ */
+const measurementId = (import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? '').trim();
+const enabled = import.meta.env.PROD && /^G-[A-Z0-9]+$/i.test(measurementId);
+---
+
+{
+  enabled && (
+    <>
+      <script
+        is:inline
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
+      />
+      <script is:inline define:vars={{ measurementId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        // page_location には ?utm_source=threads… を含んだ URL がそのまま入る（＝流入元として計測される）
+        gtag('config', measurementId);
+      </script>
+      <script is:inline>
+        // アフィリエイト（外部の広告リンク）クリック → GA4 カスタムイベント click_affiliate
+        // 判定: data-aff-key 付き／ rel="sponsored" ／ 主要ASPのドメイン
+        (function () {
+          var AFF_HOSTS = [
+            'a8.net',
+            'af.moshimo.com',
+            'valuecommerce.com',
+            'accesstrade.net',
+            'afi-b.com',
+            'hb.afl.rakuten.co.jp',
+            'amzn.to',
+          ];
+          function isAffiliate(a, url) {
+            if (a.hasAttribute('data-aff-key')) return true;
+            if (/\bsponsored\b/i.test(a.getAttribute('rel') || '')) return true;
+            var h = url.hostname;
+            for (var i = 0; i < AFF_HOSTS.length; i++) {
+              var d = AFF_HOSTS[i];
+              if (h === d || h.slice(-(d.length + 1)) === '.' + d) return true;
+            }
+            return false;
+          }
+          document.addEventListener(
+            'click',
+            function (e) {
+              try {
+                var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+                if (!a || typeof window.gtag !== 'function') return;
+                var url = new URL(a.href, location.href);
+                if (url.origin === location.origin) return;
+                if (!isAffiliate(a, url)) return;
+                window.gtag('event', 'click_affiliate', {
+                  affiliate_key: a.getAttribute('data-aff-key') || url.hostname,
+                  link_url: url.href.slice(0, 500),
+                  link_domain: url.hostname,
+                  link_text: (a.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 100),
+                  article_slug: location.pathname.replace(/^\/qa\//, '').replace(/\/$/, ''),
+                  transport_type: 'beacon',
+                });
+              } catch (err) {
+                /* 計測に失敗してもリンク遷移は止めない */
+              }
+            },
+            true
+          );
+        })();
+      </script>
+    </>
+  )
+}
