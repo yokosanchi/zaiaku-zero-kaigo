@@ -354,12 +354,14 @@ def call_llm(system_prompt: str, messages: list[dict]) -> str:
     try:
         from google import genai
         from google.genai import types
+        from google.genai.errors import ServerError
     except ImportError as exc:
         raise GenerationError(
             "google-genai package is not installed. Run `pip install -r scripts/requirements.txt`."
         ) from exc
 
     import os
+    import time
 
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -384,12 +386,35 @@ def call_llm(system_prompt: str, messages: list[dict]) -> str:
         for m in messages
     ]
 
-    response = client.models.generate_content(
-        model=model,
-        contents=contents,
-        config=types.GenerateContentConfig(system_instruction=system_prompt),
-    )
-    return response.text
+    # google-genai already retries transient errors internally, but its
+    # default policy gives up quickly; add a short outer retry for 5xx
+    # ("model overloaded") responses specifically, since those are the kind
+    # a scheduled unattended run should just wait out rather than fail on.
+    # Client errors (4xx, e.g. a bad model name) are not retried -- retrying
+    # those would only waste time before failing the same way.
+    max_attempts = 3
+    last_exc: ServerError | None = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=contents,
+                config=types.GenerateContentConfig(system_instruction=system_prompt),
+            )
+            return response.text
+        except ServerError as exc:
+            last_exc = exc
+            if attempt == max_attempts:
+                break
+            wait_s = 15 * attempt
+            print(
+                f"Gemini API server error (attempt {attempt}/{max_attempts}): {exc}. "
+                f"Retrying in {wait_s}s...",
+                file=sys.stderr,
+            )
+            time.sleep(wait_s)
+
+    raise GenerationError(f"Gemini API request failed after {max_attempts} attempts: {last_exc}")
 
 
 def split_frontmatter(raw: str) -> tuple[dict | None, str, list[str]]:
