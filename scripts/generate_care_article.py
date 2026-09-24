@@ -510,7 +510,7 @@ def main() -> int:
     try:
         keyword = pick_keyword(keywords, args.keyword_id)
     except GenerationError as exc:
-        if args.keyword_id is not None:
+        if args.keyword_id:
             print(str(exc))
             return 0
 
