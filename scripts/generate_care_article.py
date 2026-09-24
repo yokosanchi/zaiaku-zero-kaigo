@@ -366,8 +366,12 @@ def call_llm(system_prompt: str, messages: list[dict]) -> str:
         raise GenerationError("GEMINI_API_KEY environment variable is not set")
 
     # Free-tier-eligible model via Google AI Studio (ai.google.dev). Override
-    # with GEMINI_MODEL if the free-tier lineup changes.
-    model = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+    # with GEMINI_MODEL if the free-tier lineup changes. The workflow always
+    # sets this env var (from an optional repo variable), so an unset
+    # variable arrives as an empty string rather than a missing key --
+    # `or` catches both, where `.get(..., default)` would only catch the
+    # latter.
+    model = os.environ.get("GEMINI_MODEL") or "gemini-2.0-flash"
     client = genai.Client(api_key=api_key)
 
     contents = [
