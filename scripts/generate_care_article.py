@@ -110,6 +110,13 @@ class GenerationError(RuntimeError):
     pass
 
 
+class LLMRateLimited(GenerationError):
+    """Gemini's free-tier daily cap (429) or a temporary server-side outage
+    (5xx). Neither is a bug in this pipeline -- both resolve on their own,
+    so callers should treat this as "try again on the next scheduled run"
+    rather than a hard failure."""
+
+
 def load_keywords() -> list[dict]:
     with KEYWORDS_PATH.open(encoding="utf-8") as f:
         return json.load(f)
@@ -354,7 +361,7 @@ def call_llm(system_prompt: str, messages: list[dict]) -> str:
     try:
         from google import genai
         from google.genai import types
-        from google.genai.errors import ServerError
+        from google.genai.errors import APIError
     except ImportError as exc:
         raise GenerationError(
             "google-genai package is not installed. Run `pip install -r scripts/requirements.txt`."
@@ -368,13 +375,10 @@ def call_llm(system_prompt: str, messages: list[dict]) -> str:
         raise GenerationError("GEMINI_API_KEY environment variable is not set")
 
     # Free-tier-eligible model via Google AI Studio (ai.google.dev). Override
-    # with GEMINI_MODEL if the free-tier lineup changes. gemini-2.0-flash was
-    # retired by Google (API now returns 404 NOT_FOUND for it, pointing at
-    # gemini-3.6-flash as the replacement -- confirmed directly from the
-    # live API error, not guessed). The workflow always sets this env var
-    # (from an optional repo variable), so an unset variable arrives as an
-    # empty string rather than a missing key -- `or` catches both, where
-    # `.get(..., default)` would only catch the latter.
+    # with GEMINI_MODEL if the free-tier lineup changes. The workflow always
+    # sets this env var (from an optional repo variable), so an unset
+    # variable arrives as an empty string rather than a missing key -- `or`
+    # catches both, where `.get(..., default)` would only catch the latter.
     model = os.environ.get("GEMINI_MODEL") or "gemini-3.6-flash"
     client = genai.Client(api_key=api_key)
 
@@ -387,13 +391,20 @@ def call_llm(system_prompt: str, messages: list[dict]) -> str:
     ]
 
     # google-genai already retries transient errors internally, but its
-    # default policy gives up quickly; add a short outer retry for 5xx
-    # ("model overloaded") responses specifically, since those are the kind
-    # a scheduled unattended run should just wait out rather than fail on.
-    # Client errors (4xx, e.g. a bad model name) are not retried -- retrying
-    # those would only waste time before failing the same way.
-    max_attempts = 3
-    last_exc: ServerError | None = None
+    # default policy gives up quickly, so add an outer retry loop for
+    # everything an unattended scheduled run can reasonably wait out:
+    #   - 404: the model was retired. Google's own error message names the
+    #     replacement (".. use models/gemini-X ..") -- switch to it and
+    #     retry once, so a future model deprecation doesn't need a manual
+    #     code fix the way gemini-2.0-flash's retirement did.
+    #   - 429/500/502/503/504: quota exhaustion or a temporary outage.
+    #     Retry with backoff; if attempts run out, raise LLMRateLimited
+    #     (not a plain GenerationError) so callers can treat it as "try
+    #     again on the next scheduled run" instead of a hard failure.
+    # Any other error (bad request, auth failure, etc.) is not retried.
+    max_attempts = 5
+    last_exc: APIError | None = None
+    swapped_model = False
     for attempt in range(1, max_attempts + 1):
         try:
             response = client.models.generate_content(
@@ -402,19 +413,30 @@ def call_llm(system_prompt: str, messages: list[dict]) -> str:
                 config=types.GenerateContentConfig(system_instruction=system_prompt),
             )
             return response.text
-        except ServerError as exc:
+        except APIError as exc:
             last_exc = exc
-            if attempt == max_attempts:
-                break
-            wait_s = 15 * attempt
-            print(
-                f"Gemini API server error (attempt {attempt}/{max_attempts}): {exc}. "
-                f"Retrying in {wait_s}s...",
-                file=sys.stderr,
-            )
-            time.sleep(wait_s)
+            if exc.code == 404 and not swapped_model:
+                match = re.search(r"use models/([A-Za-z0-9.\-]+)", str(exc.message or exc.details))
+                if match and match.group(1) != model:
+                    model = match.group(1)
+                    swapped_model = True
+                    print(f"Gemini model retired; switching to {model}", file=sys.stderr)
+                    continue
+                raise GenerationError(f"Gemini API error: {exc}") from exc
+            if exc.code in (408, 429, 500, 502, 503, 504):
+                if attempt == max_attempts:
+                    break
+                wait_s = min(2**attempt, 30)
+                print(
+                    f"Gemini API {exc.code} (attempt {attempt}/{max_attempts}): {exc}. "
+                    f"Retrying in {wait_s}s...",
+                    file=sys.stderr,
+                )
+                time.sleep(wait_s)
+                continue
+            raise GenerationError(f"Gemini API error: {exc}") from exc
 
-    raise GenerationError(f"Gemini API request failed after {max_attempts} attempts: {last_exc}")
+    raise LLMRateLimited(f"Gemini temporarily unavailable after {max_attempts} attempts: {last_exc}")
 
 
 def split_frontmatter(raw: str) -> tuple[dict | None, str, list[str]]:
@@ -548,6 +570,9 @@ def main() -> int:
         print("No pending keywords. Asking the LLM to brainstorm new ones...")
         try:
             new_entries = generate_new_keywords(keywords)
+        except LLMRateLimited as rl_exc:
+            print(f"Gemini is temporarily rate-limited/unavailable, skipping this run: {rl_exc}")
+            return 0
         except GenerationError as gen_exc:
             print(f"ERROR: could not auto-generate new keywords: {gen_exc}", file=sys.stderr)
             return 1
@@ -569,6 +594,9 @@ def main() -> int:
 
     try:
         markdown = generate_article(keyword)
+    except LLMRateLimited as rl_exc:
+        print(f"Gemini is temporarily rate-limited/unavailable, skipping this run: {rl_exc}")
+        return 0
     except GenerationError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
