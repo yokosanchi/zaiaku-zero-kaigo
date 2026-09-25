@@ -138,5 +138,40 @@
     "category": "自分を大切にする罪悪感",
     "target_searcher": "介護の合間に息抜きすることへの罪悪感を感じ、自分の時間を作れずにいる介護者",
     "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "ninchisho-oya-donatte-shimau-zaiakukan",
+    "keyword": "認知症 親 怒鳴ってしまう 罪悪感 自己嫌悪",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "認知症の親に対して感情を抑えきれず怒鳴ってしまい、後から強い自己嫌悪と罪悪感に苦しんでいる家族介護者",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "oya-shisetsu-mitori-zaiakukan-ie-de-mitora-nai",
+    "keyword": "親 施設 看取り 罪悪感 家で看取れない",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "最期まで自宅で看取ってあげられないことや、施設で最後を迎えさせることに申し訳なさや葛藤を感じている介護者",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "day-service-oya-iyagaru-muriyari-ikaseru-zaiakukan",
+    "keyword": "デイサービス 親 嫌がる 無理やり 行かせる 罪悪感",
+    "category": "在宅サービス利用の罪悪感",
+    "target_searcher": "デイサービスを嫌がる親を説得・無理やり送り出すことに胸を痛め、心を鬼にしなければならないストレスを抱える介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigo-jitan-kinmu-doryo-moshiewanai-zaiakukan",
+    "keyword": "介護 時短勤務 同僚 申し訳ない 罪悪感",
+    "category": "介護離職・仕事との両立",
+    "target_searcher": "介護のために時短勤務や急な休みを取り、職場の同僚に負担や迷惑をかけていると感じて肩身の狭い思いをしている会社員",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "kaigochu-ryoko-iku-zaiakukan-oya-o-oite",
+    "keyword": "介護中 旅行 行く 罪悪感 親を置いて",
+    "category": "自分を大切にする罪悪感",
+    "target_searcher": "自分の気分転換やリフレッシュのために旅行へ行きたいが、介護中の親を置いて出かけることに後ろめたさを感じる介護者",
+    "conversion_type": "資料請求"
   }
 ]
