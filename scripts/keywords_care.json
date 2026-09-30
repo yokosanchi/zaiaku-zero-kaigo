@@ -173,5 +173,40 @@
     "category": "自分を大切にする罪悪感",
     "target_searcher": "自分の気分転換やリフレッシュのために旅行へ行きたいが、介護中の親を置いて出かけることに後ろめたさを感じる介護者",
     "conversion_type": "資料請求"
+  },
+  {
+    "id": "ninchisho-mutoraremousou-hanron-zaakukan",
+    "keyword": "認知症 親 物取られ妄想 疑われる 感情的に反論 罪悪感",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "認知症の親から物を盗んだと疑われ、つい感情的に言い返してしまい自己嫌悪に陥っている家族介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "oya-shisetsu-damashite-nyusho-zaakukan",
+    "keyword": "親 施設 騙すように入所 罪悪感 嘘をついて老人ホーム",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "施設入所を拒否する親に対し「検査入院」などと嘘をついて入所させることになり、強い後ろめたさを感じている家族",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "double-care-kodomo-yusen-zaakukan",
+    "keyword": "育児 介護 ダブルケア 自分の子供 優先 罪悪感",
+    "category": "自分を大切にする罪悪感",
+    "target_searcher": "子育てと親の介護が重なり、我が子の行事やケアを優先することで「親を見捨てているのでは」と苦しむ人",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "yakan-houmonkaigo-helper-zaakukan",
+    "keyword": "夜間訪問介護 頼む 罪悪感 夜間ヘルパー 親 預ける",
+    "category": "在宅サービス利用の罪悪感",
+    "target_searcher": "夜間の排泄介助や徘徊対応で睡眠不足になり限界だが、夜間に外部ヘルパーを呼ぶことにためらいや罪悪感がある家族",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "girinooya-kaigo-jisshi-yaranai-fuman",
+    "keyword": "義理の親 介護 嫌になる 罪悪感 実子 やらない 不満",
+    "category": "家族関係・負担の偏り",
+    "target_searcher": "義理の父母の介護をしているが、配偶者や実子が何も手伝わないことに対して不満と罪悪感を抱えている長男の妻など",
+    "conversion_type": "資料請求"
   }
 ]
