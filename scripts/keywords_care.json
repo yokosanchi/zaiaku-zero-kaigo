@@ -208,5 +208,40 @@
     "category": "家族関係・負担の偏り",
     "target_searcher": "義理の父母の介護をしているが、配偶者や実子が何も手伝わないことに対して不満と罪悪感を抱えている長男の妻など",
     "conversion_type": "資料請求"
+  },
+  {
+    "id": "ninchisho-haikai-kagi-zaiakukan",
+    "keyword": "認知症 徘徊 部屋に鍵をかける 罪悪感 身体拘束",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "認知症の親の事故や徘徊を防ぐために部屋や玄関に鍵をかけており、身体拘束や虐待にあたるのではないかと胸を痛めている家族介護者",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "shisetsu-menkai-ikitakunai-zaiakukan",
+    "keyword": "施設入所後 面会 行きたくない 罪悪感 帰りたいと言われる",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "施設に入所させた親から面会のたびに「家に帰りたい」と泣きつかれ、面会に行くことが辛くなり足が遠のいている自分に罪悪感を抱く家族介護者",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "kaigo-hayaku-raku-ni-naritai-zaiakukan",
+    "keyword": "親 介護 早く楽になりたい 死んでほしいと思ってしまう 罪悪感",
+    "category": "自分を大切にする罪悪感",
+    "target_searcher": "終わりの見えない介護に精神的に追い詰められ、ふと親の死を願ってしまい、そんな恐ろしいことを考えた自分に強い自己嫌悪と罪悪感を感じている家族介護者",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "kaigokyugyo-shokuba-meiwaku-zaiakukan",
+    "keyword": "介護休業 取得 職場に迷惑 罪悪感 復職 不安",
+    "category": "介護離職・仕事との両立",
+    "target_searcher": "親の介護体制を整えるために介護休業を取得したが、職場の同僚に負担をかけている申し訳なさと復職後に本当に仕事と介護を両立できるか不安な会社員",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "shokimotakinou-tomari-zaiakukan",
+    "keyword": "小規模多機能 泊まり 頻繁 利用 罪悪感 親を預けすぎ",
+    "category": "在宅サービス利用の罪悪感",
+    "target_searcher": "自分の限界や仕事の都合で小規模多機能居宅介護の「泊まり（ショートステイ）」を週に何度も利用しており、親を家に置かず預けすぎているのではないかと罪悪感を覚える家族介護者",
+    "conversion_type": "訪問介護マッチング"
   }
 ]
