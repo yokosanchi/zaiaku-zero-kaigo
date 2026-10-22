@@ -278,5 +278,40 @@
     "category": "家族関係・負担の偏り",
     "target_searcher": "幼少期のトラウマや毒親からの精神的・身体的ストレスから、親の介護をしたくない・関わりたくないと強く拒絶している子ども。「見捨てたい」と思う反面、世間の目や法律上の扶養義務、子供としての倫理観との間で激しい罪悪感に苛まれている人。",
     "conversion_type": "施設検索"
+  },
+  {
+    "id": "ninchisho-oya-suiminyaku-nomaseru-zaiakukan",
+    "keyword": "認知症 親 睡眠薬 飲ませる 罪悪感 薬で大人しくさせる",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "夜間せん妄や不眠で暴れる認知症の親に、処方された睡眠薬や精神安定剤を飲ませて落ち着かせることに対し「薬で抑えつけている」と罪悪感を抱く家族介護者。",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "oya-kaigo-telework-sewa-zaiakukan",
+    "keyword": "親 介護 テレワーク中 世話 罪悪感 仕事 集中できない",
+    "category": "介護離職・仕事との両立",
+    "target_searcher": "在宅勤務（テレワーク）をしながら親の介護を行っているが、勤務時間中に親の世話が発生して仕事に集中できず、会社にも親にも申し訳なさを抱えている介護者。",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "tokuyo-kuriagari-jitai-zaiakukan",
+    "keyword": "特養 繰り上がり 案内 迷う 罪悪感 まだ自宅で頑張るべきか",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "特養の順番待ちで繰り上がり入所の連絡が来たものの、「まだ自宅で看られるのではないか」「今すぐ施設に入れるのは可哀想か」と躊躇し罪悪感に悩む家族。",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "ninchisho-oya-omutsu-kokan-iraira-zaiakukan",
+    "keyword": "認知症 親 おむつ交換 嫌がる 強く言ってしまう 罪悪感",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "認知症の親の排泄介助やおむつ交換時に強い拒否を受け、イライラして強い口調で怒ってしまい、後で激しい自己嫌悪に陥っている介護者。",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigochu-shumi-live-iku-zaiakukan",
+    "keyword": "介護中 趣味 ライブ 映画 行く 罪悪感 親 留守番",
+    "category": "自分を大切にする罪悪感",
+    "target_searcher": "介護の息抜きとして自分の趣味（ライブや映画など）に出かけたいが、高齢の親を留守番させて自分だけ楽しむことに強い後ろめたさを感じている介護者。",
+    "conversion_type": "資料請求"
   }
 ]
