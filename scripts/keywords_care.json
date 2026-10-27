@@ -313,5 +313,40 @@
     "category": "自分を大切にする罪悪感",
     "target_searcher": "介護の息抜きとして自分の趣味（ライブや映画など）に出かけたいが、高齢の親を留守番させて自分だけ楽しむことに強い後ろめたさを感じている介護者。",
     "conversion_type": "資料請求"
+  },
+  {
+    "id": "ninchisho-oya-tsucho-azukaru-zaakukan",
+    "keyword": "認知症 親 通帳 管理 奪う 罪悪感 取り上げる",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "認知症が進行した親の通帳やお金の管理を取り上げ、親の財産を奪っているかのような罪悪感を抱いている家族",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "ninchisho-mimamori-camera-zaakukan",
+    "keyword": "認知症 親 見守りカメラ 設置 罪悪感 監視",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "親の事故や徘徊を防ぐために見守りカメラを設置したものの、プライバシーを侵害し監視しているように感じて悩んでいる家族",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "kaigo-mago-tetsudawaseru-zaakukan",
+    "keyword": "介護 孫 手伝わせる 罪悪感 子ども 負担",
+    "category": "家族関係・負担の偏り",
+    "target_searcher": "自分一人では介護が回らず自分の子ども（孫）に介護や世話を手伝わせてしまい、子どもの自由を奪っていると罪悪感を持つ家族",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigochu-jibun-tsuin-yusen-zaakukan",
+    "keyword": "介護中 自分の病気 通院 優先 罪悪感",
+    "category": "自分を大切にする罪悪感",
+    "target_searcher": "自分自身の体調不良や病気の治療・通院を優先することで、親の介護を後回しにしたり福祉サービスへ頼ったりすることに罪悪感を覚える介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "grouphome-nyukyo-ketsudan-zaakukan",
+    "keyword": "グループホーム 入居 決断 罪悪感 認知症 親",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "認知症の症状悪化によりグループホームへの入居を決めたが、自宅介護を諦めてしまったことに強い罪悪感を感じている家族",
+    "conversion_type": "施設検索"
   }
 ]
