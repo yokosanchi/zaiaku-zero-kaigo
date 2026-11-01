@@ -348,5 +348,40 @@
     "category": "施設入所の罪悪感",
     "target_searcher": "認知症の症状悪化によりグループホームへの入居を決めたが、自宅介護を諦めてしまったことに強い罪悪感を感じている家族",
     "conversion_type": "施設検索"
+  },
+  {
+    "id": "roken-taisho-kigen-zitaku-modosenai-zaakukan",
+    "keyword": "老健 退所 期限 自宅に戻せない 罪悪感 次の施設",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "老健（介護老人保健施設）の入所期限が迫っているが自宅での介護は不可能なため、親をたらい回しにするようで罪悪感を抱きながら次の施設を探している家族",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "ninchishou-oya-menkyo-hennou-muriyari-zaakukan",
+    "keyword": "認知症 親 運転免許 返納 無理やり 罪悪感 鍵 隠す",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "事故を防ぐために認知症の親から車の鍵を取り上げたり説得して無理やり免許返納させたりしたが、親の生きがいや自由を奪ってしまったと激しい罪悪感に苦しむ子ども",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "kaigo-jihi-houmonkaigo-tanomu-zaakukan",
+    "keyword": "介護 保険外サービス 頼む 罪悪感 自費 訪問介護 贅沢",
+    "category": "在宅サービス利用の罪悪感",
+    "target_searcher": "介護保険の限度額を超えて自費の訪問介護や家事代行・外出付き添いサービスを利用しているが、『自分がお金を払って楽をしているだけでは』と後ろめたさを感じる介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "oya-shisetsu-jikkajimai-nimotsu-shobun-zaakukan",
+    "keyword": "施設入所 親の荷物 処分 実家じまい 罪悪感 勝手に捨てる",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "親が施設に入所したため実家の片付けや荷物の処分を進めているが、まだ生きている親の思い出の品を本人の許可なく捨てることに強い罪悪感を抱いている子ども",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "ninchishou-oya-shikkin-kiya-zaakukan",
+    "keyword": "認知症 親 失禁 汚物処理 汚いと思ってしまう 罪悪感",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "認知症の親の排泄失敗や汚物処理の際、生理的な嫌悪感や「汚い」と感じてしまい、優しく接することができずに自己嫌悪に陥っている家族介護者",
+    "conversion_type": "資料請求"
   }
 ]
