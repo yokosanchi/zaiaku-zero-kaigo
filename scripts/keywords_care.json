@@ -383,5 +383,40 @@
     "category": "認知症介護の罪悪感",
     "target_searcher": "認知症の親の排泄失敗や汚物処理の際、生理的な嫌悪感や「汚い」と感じてしまい、優しく接することができずに自己嫌悪に陥っている家族介護者",
     "conversion_type": "資料請求"
+  },
+  {
+    "id": "nintisho-oyano-gps-zaaiakukan",
+    "keyword": "認知症 親 GPS 持たせる 罪悪感 監視 迷子防止",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "認知症の親の徘徊や迷子を防ぐためにGPS端末を持たせたいが、監視しているようで罪悪感や抵抗感を抱いている家族介護者",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "shisetsu-oyano-chokin-tsukau-zaaiakukan",
+    "keyword": "親の貯金 施設費用 使う 罪悪感 勝手に引き出す 老人ホーム",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "親を老人ホームに入所させる際、親自身の貯金や年金から費用を支払うことに対して「親のお金を奪っている」と罪悪感を感じている子供",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "houmon-nyuyoku-oyano-karada-zaaiakukan",
+    "keyword": "訪問入浴 頼む 罪悪感 親の体を他人に洗わせる 申し訳ない",
+    "category": "在宅サービス利用の罪悪感",
+    "target_searcher": "自宅での入浴介助が限界になり訪問入浴サービスを検討・利用しているが、親の身体を他人に見せて世話を任せることに恥ずかしさや罪悪感がある家族",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigo-zangyo-kotowaru-zaaiakukan",
+    "keyword": "介護 残業 断る 罪悪感 定時退社 職場に申し訳ない",
+    "category": "介護離職・仕事との両立",
+    "target_searcher": "介護の送り出しやデイサービスの帰宅対応のため、残業を断り定時退社せざるを得ず、職場の同僚に迷惑をかけていると悩む会社員",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "kaigo-guchi-haigusha-zaaiakukan",
+    "keyword": "介護 夫に愚痴 嫌がられる 罪悪感 夫婦関係 悪化",
+    "category": "家族関係・負担の偏り",
+    "target_searcher": "自分の親の介護ストレスを配偶者（夫・妻）に愚痴って嫌な顔をされたり、家庭内の雰囲気を悪くしてしまい「自分の家族を巻き込んでいる」と責めている人",
+    "conversion_type": "資料請求"
   }
 ]
