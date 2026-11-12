@@ -418,5 +418,40 @@
     "category": "家族関係・負担の偏り",
     "target_searcher": "自分の親の介護ストレスを配偶者（夫・妻）に愚痴って嫌な顔をされたり、家庭内の雰囲気を悪くしてしまい「自分の家族を巻き込んでいる」と責めている人",
     "conversion_type": "資料請求"
+  },
+  {
+    "id": "enmei-chiryo-irou-tsukaranai-zaiakukan",
+    "keyword": "親 介護 延命治療 胃ろう 作らない 決断 罪悪感",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "医師から胃ろうなどの延命治療の選択を迫られ、親の尊厳を優先して拒否する決断をしたものの、見捨てるような罪悪感に苛まれている家族",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "ninchisho-ben-ijiri-donarutaimingu-zaiakukan",
+    "keyword": "認知症 便いじり 怒鳴ってしまう 罪悪感 後悔",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "認知症の親の便いじりや汚物処理の現場に直面し、感情を抑えきれずに激しく怒鳴ってしまい強烈な自己嫌悪に陥っている家族",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "dokushin-kaigo-konkatsu-jibun-no-jinsei-zaiakukan",
+    "keyword": "独身 介護 親 一人で抱える 婚活 自分の人生 優先 罪悪感",
+    "category": "家族関係・負担の偏り",
+    "target_searcher": "独身であることを理由に親の介護を一手に担わされているが、自分の結婚や将来の人生を優先したい気持ちとの間で激しく葛藤している人",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "kaigo-day-service-yobidashi-sotai-zaiakukan",
+    "keyword": "介護 デイサービス 急な呼び出し 職場 早退 申し訳ない 罪悪感",
+    "category": "介護離職・仕事との両立",
+    "target_searcher": "デイサービスからの発熱やトラブル等の急な呼び出しで仕事中に頻繁に早退・中抜けせざるを得ず、職場への申し訳なさで追い詰められている人",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "kaigo-stress-jibun-no-kodomo-yatsuatari-zaiakukan",
+    "keyword": "介護 ストレス 自分の子供 八つ当たり 罪悪感 イライラ",
+    "category": "自分を大切にする罪悪感",
+    "target_searcher": "親の介護で溜まった苛立ちや疲労から、自分の子供に対して感情的に八つ当たりをしてしまい、親としても介護者としても自分を責めている人",
+    "conversion_type": "訪問介護マッチング"
   }
 ]
