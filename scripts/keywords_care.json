@@ -453,5 +453,40 @@
     "category": "自分を大切にする罪悪感",
     "target_searcher": "親の介護で溜まった苛立ちや疲労から、自分の子供に対して感情的に八つ当たりをしてしまい、親としても介護者としても自分を責めている人",
     "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "oyasetsu-cost-down-zaakukan",
+    "keyword": "親 施設 費用 払えない 罪悪感 安い 老人ホーム 移転",
+    "category": "施設入所の罪悪感",
+    "target_searcher": "介護費用が高くて支払いが難しくなり、親をより安価な施設や相部屋へ移転させざるを得ず、申し訳なさと罪悪感を抱える家族",
+    "conversion_type": "施設検索"
+  },
+  {
+    "id": "ninchisho-oyaboryoku-keisatsu-zaakukan",
+    "keyword": "認知症 親 暴力 警察 呼ぶ 罪悪感 通報 限界",
+    "category": "認知症介護の罪悪感",
+    "target_searcher": "認知症の親からの激しい暴言や身体的暴力に耐えかねて警察や行政を頼ったものの、親を傷つけたような激しい自己嫌悪に陥る家族介護者",
+    "conversion_type": "資料請求"
+  },
+  {
+    "id": "kaigo-yukyu-tsukaihatasu-kekkin-zaakukan",
+    "keyword": "介護 有休 使い果たす 欠勤 申し訳ない 罪悪感 仕事 継続",
+    "category": "介護離職・仕事との両立",
+    "target_searcher": "親の突発的な体調変化や介護対応で有給休暇を使い切り、欠勤が増えて職場への罪悪感と将来の離職不安に苛まれる働く介護者",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "houmon-kango-mitori-zaakukan",
+    "keyword": "訪問看護 看取り 頼む 罪悪感 家で家族が介護できない",
+    "category": "在宅サービス利用の罪悪感",
+    "target_searcher": "親の最期を自宅で迎えさせたいが家族だけでは対応できず、医療処置や看取り介護の多くを訪問看護師頼みにすることに罪悪感を感じる家族",
+    "conversion_type": "訪問介護マッチング"
+  },
+  {
+    "id": "kaigo-kodomo-gyoji-sacrificed-zaakukan",
+    "keyword": "親 介護 優先 自分の子供 行事 休む 罪悪感",
+    "category": "自分を大切にする罪悪感",
+    "target_searcher": "親の急な通院や介護を優先せざるを得ず、実の子どもの学校行事や発表会への参加を諦めさせてしまい、子どもに対して罪悪感を抱く保護者",
+    "conversion_type": "訪問介護マッチング"
   }
 ]
